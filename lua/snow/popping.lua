@@ -13,6 +13,99 @@ local strategies = {
   conditional = "conditional"
 }
 
+--- 把配置里的简单正则编译成 Lua pattern；不支持的语法返回 nil（回退 FFI）。
+--- 只覆盖 popping/shape 规则用到的子集：字符类、分组 (?:…)、计数 {n}/{n,}/{n,m}。
+---@param re string
+---@return string|nil
+local function compile_lua(re)
+  if not re or re == "" then
+    return nil
+  end
+  if re:find("|", 1, true) or re:find("(?=", 1, true) or re:find("(?!", 1, true) then
+    return nil
+  end
+  local s = re
+  s = s:gsub("\\([dDsSwW])", function(c)
+    return "%" .. c:lower()
+  end)
+  s = s:gsub("\\(.)", "%%%1")
+  s = s:gsub("%(%?%:", "(")
+  local pos = 1
+  while true do
+    local b = s:find("{", pos, true)
+    if not b then
+      break
+    end
+    local e = s:find("}", b, true)
+    if not e then
+      return nil
+    end
+    local spec = s:sub(b + 1, e - 1)
+    local n, m = spec:match("^(%d+),(%d*)$")
+    if not n then
+      n = spec:match("^(%d+)$")
+    end
+    if not n then
+      return nil
+    end
+    n = tonumber(n)
+    local has_comma = spec:find(",", 1, true) ~= nil
+    m = m and m ~= "" and tonumber(m) or nil
+    if m and m < n then
+      return nil
+    end
+    local j = b - 1
+    if j < 1 then
+      return nil
+    end
+    local c = s:sub(j, j)
+    local astart
+    if c == ")" then
+      local depth = 0
+      while j >= 1 do
+        local ch = s:sub(j, j)
+        if ch == ")" then
+          depth = depth + 1
+        elseif ch == "(" then
+          depth = depth - 1
+          if depth == 0 then
+            astart = j
+            break
+          end
+        end
+        j = j - 1
+      end
+    elseif c == "]" then
+      while j >= 1 and s:sub(j, j) ~= "[" do
+        j = j - 1
+      end
+      astart = j
+    else
+      astart = j
+    end
+    if not astart or astart < 1 then
+      return nil
+    end
+    local atom = s:sub(astart, b - 1)
+    if atom == "" then
+      return nil
+    end
+    -- Lua pattern 不支持对捕获组加量词（(X)? 无匹配），这类规则回退 FFI。
+    if atom:sub(1, 1) == "(" then
+      return nil
+    end
+    local rep = atom:rep(n)
+    if m then
+      rep = rep .. (atom .. "?"):rep(m - n)
+    elseif has_comma then
+      rep = rep .. atom .. "*"
+    end
+    s = s:sub(1, astart - 1) .. rep .. s:sub(e + 1)
+    pos = astart + #rep
+  end
+  return "^" .. s .. "$"
+end
+
 ---@class PoppingConfig
 ---@field when string
 ---@field match string
@@ -51,10 +144,14 @@ function processor.init(env)
     if not item then goto continue end
     local value = item:get_map()
     if not value then goto continue end
+    local match = value:get_value("match"):get_string()
+    local accept = value:get_value("accept"):get_string()
     local popping = {
       when = value:get_value("when") and value:get_value("when"):get_string(),
-      match = value:get_value("match"):get_string(),
-      accept = value:get_value("accept"):get_string(),
+      match = match,
+      accept = accept,
+      match_lua = compile_lua(match),
+      accept_lua = compile_lua(accept),
       prefix = value:get_value("prefix") and value:get_value("prefix"):get_int(),
       strategy = value:get_value("strategy") and value:get_value("strategy"):get_string()
     }
@@ -123,10 +220,18 @@ function processor.func(key_event, env)
     if when and not context:get_option(when) then
       goto continue
     end
-    if not rime_api.regex_match(input, rule.match) then
+    if rule.match_lua then
+      if not input:match(rule.match_lua) then
+        goto continue
+      end
+    elseif not rime_api.regex_match(input, rule.match) then
       goto continue
     end
-    if not rime_api.regex_match(incoming, rule.accept) then
+    if rule.accept_lua then
+      if not incoming:match(rule.accept_lua) then
+        goto continue
+      end
+    elseif not rime_api.regex_match(incoming, rule.accept) then
       goto continue
     end
     -- 如果策略为追加编码，则不执行顶屏直接返回

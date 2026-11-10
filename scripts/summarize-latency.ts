@@ -39,7 +39,7 @@ export function formatLatencySummary(report: SummaryReport): string {
 	const lines = [
 		"## 按键反馈延迟",
 		"",
-		failures.length ? "❌ 统一性能预算未通过" : "✅ 五方案统一性能预算通过",
+		failures.length ? "❌ 统一性能预算未通过" : "✅ 冰雪键道统一性能预算通过",
 		"",
 		`每场景 ${metadata.rounds} 轮；单位为毫秒。P50 < ${LATENCY_BUDGET.p50}、P95 < ${LATENCY_BUDGET.p95}、P99 < ${LATENCY_BUDGET.p99}；各场景及按键位置的 P99 < ${LATENCY_BUDGET.p99}，首次最大反馈 < ${LATENCY_BUDGET.firstMax}。`,
 		"",

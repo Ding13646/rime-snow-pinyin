@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   latency:
-    name: 五方案统一延迟预算
+    name: 冰雪键道统一延迟预算
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
@@ -45,7 +45,7 @@ jobs:
           bun-version: 1.3.14
       - name: 安装脚本依赖
         run: bun install --cwd scripts --frozen-lockfile
-      - name: 检查五个方案的统一性能预算
+      - name: 检查冰雪键道的统一性能预算
         run: bun scripts/benchmark-latency.ts --ci --console output/latency-runtime/build/bin/rime_api_console --output-dir output/latency-ci
       - name: 展示性能结果
         if: always()

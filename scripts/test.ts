@@ -24,13 +24,7 @@ import { checkPinyinDictionary } from "./check-pinyin-dict";
 import { ROOT } from "./lib/paths";
 import { copyRimeDependencies } from "./lib/rime-dependencies";
 
-const SCHEMAS = [
-	"snow_sipin",
-	"snow_sanpin",
-	"snow_yipin",
-	"snow_jiandao",
-	"snow_qingyun",
-];
+const SCHEMAS = ["snow_jiandao"];
 
 // 写时复制（APFS 上几乎不花时间），不支持时退化为普通复制
 function clone(src: string, dest: string) {

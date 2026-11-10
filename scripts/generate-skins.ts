@@ -2,7 +2,7 @@ import { homedir } from "node:os";
 import { join, resolve } from "node:path";
 import { parseArgs } from "node:util";
 import { generateHamsterSkin } from "./skin/hamster";
-import { jiandao, qpkr, qwerty, qwrt, shufu } from "./skin/layouts";
+import { jiandao, qwerty, shufu } from "./skin/layouts";
 import { generateTrimeSkin } from "./skin/trime";
 import type { KeyboardCollection } from "./skin/types";
 
@@ -63,26 +63,6 @@ function main() {
 			);
 		}
 	};
-	const snow_sipin = {
-		colorful: true,
-		label: true,
-		keyInfos: qpkr,
-	};
-	const snow_qingyun = {
-		colorful: true,
-		label: true,
-		keyInfos: qwrt,
-	};
-	const snow_sipin_nolabel = {
-		colorful: true,
-		label: false,
-		keyInfos: qpkr,
-	};
-	const snow_qingyun_nolabel = {
-		colorful: true,
-		label: false,
-		keyInfos: qwrt,
-	};
 	const general = {
 		colorful: false,
 		label: true,
@@ -107,22 +87,6 @@ function main() {
 		keyInfos: shufu,
 	};
 
-	generateSkinFolder("俏皮可爱・七色", {
-		pinyin: snow_sipin,
-		alphabetic: general,
-	});
-	generateSkinFolder("俏皮可爱・七色・无刻", {
-		pinyin: snow_sipin_nolabel,
-		alphabetic: general,
-	});
-	generateSkinFolder("直列 35 键", {
-		pinyin: snow_qingyun,
-		alphabetic: general,
-	});
-	generateSkinFolder("直列 35 键・无刻", {
-		pinyin: snow_qingyun_nolabel,
-		alphabetic: general,
-	});
 	generateSkinFolder("键道 35 键", {
 		pinyin: snow_jiandao,
 		alphabetic: general,
@@ -134,9 +98,6 @@ function main() {
 		alphabetic: general,
 		numeric: snow_shufu,
 		symbolic: snow_shufu,
-	});
-	generateSkinFolder("直列 45 键", {
-		pinyin: { ...general, symbol: false },
 	});
 
 	console.log(`已生成 ${backend} 皮肤到 ${prefix}`);

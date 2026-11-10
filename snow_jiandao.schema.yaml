@@ -118,7 +118,7 @@ speller:
     - match: ".*[a-z0-9]"
       accept: "[^a-z0-9 ]"
   algebra:
-    __include: snow_sanpin.schema.yaml:/sanpin_algebra
+    __include: snow_jiandao_algebra.yaml:/jiandao_algebra
     __append:
       # 英数字母的音节码；改动时 snow_jiandao_jianpin 的 algebra 要跟着改
       - xform/~{1,2}([bpmfdtnlgkhjqxzcsrywe])/$1e/
@@ -144,7 +144,7 @@ lookup_jiandao:
   overwrite_comment: true
   dictionary: snow_pinyin
   comment_format:
-    __include: snow_sanpin.schema.yaml:/sanpin_algebra
+    __include: snow_jiandao_algebra.yaml:/jiandao_algebra
     __append:
       - xform/q([zhe])/f$1/
       - xform/[viuoa]( |$)/$1/ # 无声调

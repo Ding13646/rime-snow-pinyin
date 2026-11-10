@@ -294,7 +294,7 @@ function processor.init(env)
     end
     record(env, string.char(keycode))
   end)
-  -- 以词定字、略码等用 snow.commit_text 直接上屏的
+  -- 以词定字等用 snow.commit_text 直接上屏的
   env.property_connection = context.property_update_notifier:connect(function(ctx, name)
     if name == "commit_text" then
       env.committed = true
@@ -308,7 +308,7 @@ end
 ---@param env StatisticsEnv
 local function chord(key_event, env)
   local keycode = key_event.keycode
-  -- 非并击键和带修饰键的键会让 chord_composer 放弃当前并击（冰雪一拼没有开 use_shift 等选项）
+  -- 非并击键和带修饰键的键会让 chord_composer 放弃当前并击
   if not env.chord_keys[keycode] or key_event:ctrl() or key_event:alt() or key_event:shift()
       or key_event:super() or key_event:caps() then
     env.held = {}
@@ -618,9 +618,6 @@ local function help(env, segment)
     "选择设备：默认只看本机；" .. command .. "f 分列有数据的设备，" .. command .. "h 合并所有设备。f 或 h 写在时段前，例如 " .. command .. "fr-1 查各设备昨天，" .. command .. "h2026 查合并后的 2026 年。",
     "其他设备的数据需要先通过 Rime 同步，才会出现在本机的分列和合并报告中。",
   }
-  if env.schema_id == "snow_yipin" then
-    table.insert(lines, 2, "冰雪一拼可并击 jkl 输入 " .. command .. "。")
-  end
   env.reports[brief] = table.concat(lines, "\r\n")
   yield(Candidate("statistics", segment.start, segment._end, brief, ""))
 end

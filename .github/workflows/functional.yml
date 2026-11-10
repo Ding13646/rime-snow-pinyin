@@ -24,24 +24,11 @@ jobs:
         run: bun scripts/version.ts --check
       - name: 检查发布脚本
         run: bun test scripts/benchmark-latency.test.ts scripts/version.test.ts
-      - name: 检查五个方案的全部拼音音节编码
+      - name: 检查冰雪键道的全部拼音音节编码
         run: bun scripts/check-pinyin-dict.ts
   test:
-    name: 测试
+    name: 冰雪键道
     runs-on: ubuntu-24.04
-    strategy:
-      matrix:
-        include:
-          - name: 冰雪四拼
-            schema: snow_sipin
-          - name: 冰雪三拼
-            schema: snow_sanpin
-          - name: 冰雪一拼
-            schema: snow_yipin
-          - name: 冰雪键道
-            schema: snow_jiandao
-          - name: 冰雪清韵
-            schema: snow_qingyun
     steps:
       - name: 获取代码
         uses: actions/checkout@v4
@@ -51,7 +38,7 @@ jobs:
         run: |
           wget https://github.com/rimeinn/mira/releases/download/latest/mira
           chmod +x mira
-      - name: ${{ matrix.name }}
+      - name: 冰雪键道
         run: |
           cp deps/rime-radical-pinyin/radical_pinyin.{schema,dict}.yaml .
-          ./mira -C build spec/${{ matrix.schema }}.test.yaml
+          ./mira -C build spec/snow_jiandao.test.yaml

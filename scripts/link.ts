@@ -40,6 +40,7 @@ const FILE_PATTERNS = [
 	"snow_*.schema.yaml",
 	"snow_*.dict.yaml",
 	"snow_*.fixed.txt",
+	"snow_jiandao_algebra.yaml",
 ];
 
 function isLink(path: string): boolean {

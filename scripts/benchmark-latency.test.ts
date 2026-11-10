@@ -27,7 +27,7 @@ process.on("SIGTERM", () => {
 for await (const line of createInterface({ input: process.stdin })) {
   if (line === "print schema list") {
     console.log("Lua audit error: 模拟初始化失败");
-    console.log("current schema: [snow_sipin]");
+    console.log("current schema: [snow_jiandao]");
   }
 }
 `,
@@ -38,9 +38,9 @@ for await (const line of createInterface({ input: process.stdin })) {
 			process.execPath,
 			[
 				join(ROOT, "scripts/benchmark-latency.ts"),
-				"sipin",
+				"jiandao",
 				"--case",
-				"^single$",
+				"^single-shape$",
 				"--rounds",
 				"2",
 				"--console",
@@ -52,7 +52,7 @@ for await (const line of createInterface({ input: process.stdin })) {
 		);
 		expect(result.error).toBeUndefined();
 		expect(result.status).toBe(1);
-		const log = readFileSync(join(output, "snow_sipin.log"), "utf8");
+		const log = readFileSync(join(output, "snow_jiandao.log"), "utf8");
 		expect(log).toContain("初始化日志");
 		expect(log).toContain("模拟初始化失败");
 		expect(log).toContain("退出前的最后一条日志");

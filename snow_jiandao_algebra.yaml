@@ -1,0 +1,43 @@
+# encoding: utf-8
+---
+# 冰雪键道的拼写运算：全拼还原、声母飞键、韵母、声调。
+# 原为冰雪三拼的 sanpin_algebra，三拼移除后独立成文件，供键道与简拼棱镜共用。
+jiandao_algebra:
+  # 全拼还原
+  - xlit/ê/e/
+  - xform/(^| )r5(?= |$)/$1er5/ # 儿化轻声并入 er5，避免占用单键 r
+  - xform/(?<=[jqxy])u(e?\d)/v$1/
+  - xform/(^| )([aoe]|[mn]g?\d)/$1X$2/
+  # 声母飞键
+  - xform/zh(an|ang|ei|en|eng|u|un)(?=\d)/Q$1/
+  - derive/zh(ai|ao|e)(?=\d)/Q$1/
+  - xform/zh/F/
+  - xform/ch(ai|an|ang|ei|en|eng|u|un)(?=\d)/J$1/
+  - derive/ch(ao|e)(?=\d)/J$1/
+  - xform/ch/W/
+  - xform/sh/E/
+  # 韵母
+  - derive/uang(?=\d)/M/
+  - xform/[iu]ang(?=\d)/X/
+  - xform/i?ong(?=\d)/Y/
+  - xform/ang(?=\d)/P/
+  - xform/(ing|uai)(?=\d)/G/
+  - xform/e?ng(?=\d)/R/
+  - xform/(ei|un)(?=\d)/W/
+  - xform/en(?=\d)/N/
+  - xform/[uv]an(?=\d)/T/
+  - xform/ian(?=\d)/M/
+  - xform/an(?=\d)/F/
+  - xform/(iu|ua)(?=\d)/Q/
+  - xform/(ie|ou)(?=\d)/D/
+  - xform/(ai|ve|ue)(?=\d)/H/
+  - xform/iao(?=\d)/C/
+  - xform/ao(?=\d)/Z/
+  - xform/(in|ui)(?=\d)/B/
+  - xform/(u?o|v)(?=\d)/L/
+  - xform/i(?=\d)/K/
+  - xform/i?a(?=\d)/S/
+  - xform/(er|u)(?=\d)/J/
+  - xlit/QWERTYUIOPASDFGHJKLZXCVBNM/qwertyuiopasdfghjklzxcvbnm/
+  # 声调
+  - xlit/12345/viuoa/

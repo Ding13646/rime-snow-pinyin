@@ -80,7 +80,7 @@ function filter.func(translation, env)
   for candidate in translation:iter() do
     local genuine = candidate:get_genuine()
     local phrase = genuine:to_phrase()
-    -- 冰雪清韵的拼音、笔画共用段标签，按词典语言名识别，不能筛掉拼音候选。
+    -- 拼音与笔画共用段标签，按词典语言名识别，不能筛掉拼音候选。
     if not phrase or phrase.lang_name ~= "snow_bihua" then
       yield(candidate)
       goto continue

@@ -152,7 +152,7 @@ key_binder:
     __append:
       - { accept: "Control+Shift+4", toggle: traditionalization, when: always }
       - { accept: "Control+Shift+dollar", toggle: traditionalization, when: always }
-  # 冰雪清韵简繁通打，只复用不含简繁转换的公共绑定
+  # 公共键绑定；简繁转换的绑定在 bindings 里单独追加
   bindings_common:
     # Emacs 编辑键
     - { accept: "Control+p", send: Up, when: composing }

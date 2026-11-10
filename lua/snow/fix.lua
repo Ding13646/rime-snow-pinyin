@@ -58,7 +58,8 @@ function filter.get_customized_list(env, input)
     end
   end
   if not env.user_dict then
-    return fixed_phrases
+    -- 没有用户词库时直接复用配置表，避免每键复制
+    return env.dict[input] or fixed_phrases
   end
   local max_index = 0
   local da = env.user_dict:query(input .. snow.separator)
@@ -99,9 +100,8 @@ end
 ---@param env FixEnv
 function filter.func(translation, env)
   local context = env.engine.context
-  local segment = context.composition:toSegmentation():back()
   local input = snow.current(context)
-  if not segment or not input then
+  if not input then
     for candidate in translation:iter() do
       yield(candidate)
     end
@@ -115,6 +115,13 @@ function filter.func(translation, env)
   local fixed_phrases = filter.get_customized_list(env, full_input)
   -- 空表在 Lua 中也为真；没有固定候选时直接透传，避免无谓地预取 100 个候选。
   if #fixed_phrases == 0 then
+    for candidate in translation:iter() do
+      yield(candidate)
+    end
+    return
+  end
+  local segment = context.composition:toSegmentation():back()
+  if not segment then
     for candidate in translation:iter() do
       yield(candidate)
     end

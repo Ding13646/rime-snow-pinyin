@@ -69,13 +69,8 @@ function copyRimeSource(source: string, dest: string) {
 	}
 	clone(join(source, "lua"), join(dest, "lua"));
 	clone(join(source, "default.yaml"), join(dest, "default.yaml"));
-	// 历史版本尚未依赖部件词库时保持原来的部署环境。
-	if (
-		readFileSync(join(source, "snow_sipin.schema.yaml"), "utf8").includes(
-			"    - radical_pinyin\n",
-		)
-	)
-		copyRimeDependencies(source, dest);
+	// 键道依赖部件词库，部署环境需要一并复制。
+	copyRimeDependencies(source, dest);
 }
 
 function sourceFingerprint(source: string): string {
@@ -270,7 +265,7 @@ async function main() {
 			casePattern.source !== "."
 		)
 			throw new Error(
-				`--ci 必须测当前五方案全部场景，至少 ${LATENCY_BUDGET.minimumRounds} 轮`,
+				`--ci 必须覆盖全部场景，至少 ${LATENCY_BUDGET.minimumRounds} 轮`,
 			);
 	}
 	if (!Number.isInteger(rounds) || rounds < 1 || !(maxP99 > 0))
@@ -352,7 +347,7 @@ async function main() {
 			copyRimeSource(source, dir);
 			writeFileSync(
 				join(dir, "default.custom.yaml"),
-				`patch:\n  schema_list:\n    - schema: ${schema}\n    - schema: snow_bushou\n`,
+				`patch:\n  schema_list:\n    - schema: ${schema}\n`,
 			);
 			const log = join(output, `${schema}.log`);
 			writeFileSync(log, "");
@@ -447,21 +442,13 @@ async function main() {
 		}
 		const groups = new Map<string, Sample[]>();
 		for (const sample of samples) {
-			const feedback =
-				sample.schema !== "snow_yipin" ||
-				sample.kind === "chord-feedback" ||
-				(sample.kind === "control" && sample.key !== "{space}");
 			for (const group of [
 				`${sample.schema}/${sample.phase}`,
 				`${sample.schema}/${sample.phase}/${sample.case}`,
 				`${sample.schema}/${sample.phase}/${sample.case}/event:${sample.index}:${sample.key}`,
 				`${sample.schema}/${sample.phase}/kind:${sample.kind}`,
-				...(feedback
-					? [
-							`${sample.schema}/${sample.phase}/feedback`,
-							`${sample.schema}/${sample.phase}/${sample.case}/feedback`,
-						]
-					: []),
+				`${sample.schema}/${sample.phase}/feedback`,
+				`${sample.schema}/${sample.phase}/${sample.case}/feedback`,
 			]) {
 				if (!groups.has(group)) groups.set(group, []);
 				groups.get(group)!.push(sample);
@@ -530,7 +517,7 @@ async function main() {
 			throw new Error(`统一性能预算不通过：\n${budgetFailures.join("\n")}`);
 		if (ci)
 			console.log(
-				`✓ 五方案 p50 < ${LATENCY_BUDGET.p50}、p95 < ${LATENCY_BUDGET.p95}、p99 < ${LATENCY_BUDGET.p99} ms`,
+				`✓ 统一预算 p50 < ${LATENCY_BUDGET.p50}、p95 < ${LATENCY_BUDGET.p95}、p99 < ${LATENCY_BUDGET.p99} ms`,
 			);
 		// 按场景和事件类型检查，避免大量便宜事件掩盖少量昂贵事件。
 		const failed = Object.entries(summary).filter(

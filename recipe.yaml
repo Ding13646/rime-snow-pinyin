@@ -14,6 +14,7 @@ install_files:
   - snow_*.schema.yaml
   - snow_*.dict.yaml
   - snow_*.fixed.txt
+  - snow_jiandao_algebra.yaml
   - lua/snow/*
   - radical_pinyin.schema.yaml
   - radical_pinyin.dict.yaml

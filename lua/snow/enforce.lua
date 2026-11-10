@@ -28,8 +28,10 @@ function filter.func(translation, env)
     return
   end
   local mixed_spelling = input:find("[BPMFDTNLGKHJQXZCSRYWE]") ~= nil
-  local is_shuangpin = not mixed_spelling and rime_api.regex_match(full_input, "[bpmfdtnlgkhjqxzcsrywe]{2}[vioua]*")
-  local is_four = not mixed_spelling and rime_api.regex_match(full_input, "[bpmfdtnlgkhjqxzcsrywe]{4}[vioua]*")
+  local is_shuangpin = not mixed_spelling
+    and full_input:match("^[bpmfdtnlgkhjqxzcsrywe][bpmfdtnlgkhjqxzcsrywe][vioua]*$") ~= nil
+  local is_four = not mixed_spelling
+    and full_input:match("^[bpmfdtnlgkhjqxzcsrywe][bpmfdtnlgkhjqxzcsrywe][bpmfdtnlgkhjqxzcsrywe][bpmfdtnlgkhjqxzcsrywe][vioua]*$") ~= nil
   for candidate in translation:iter() do
     -- 同段原生翻译结果按消耗长度降序排列。简拼只接受完整编码，遇到短候选即可结束，
     -- 不必逐个生成 preedit 再丢弃整批前缀词；四码仍保留单字，供选择造词使用。
@@ -38,9 +40,13 @@ function filter.func(translation, env)
     end
     local dynamic_type = candidate:get_dynamic_type()
     local is_phrase = dynamic_type == "Phrase" or dynamic_type == "Sentence"
-    local is_normal_spelling = false
-    local preedit = rime_api.regex_replace(candidate.preedit, " 形.+$", "")
-    local is_character = utf8.len(candidate.text) == 1 and preedit:len() == 2
+    -- 单字/非词组候选无论拼写形式都放行：先 yield，省掉 preedit 处理与 FFI 正则。
+    if not is_phrase then
+      yield(candidate)
+      goto continue
+    end
+    local preedit = candidate.preedit:gsub(" 形.+$", "")
+    local is_normal_spelling
     if mixed_spelling then
       -- 大写韵母与前一个声母构成同一音节，仅用于三字及以上词
       is_normal_spelling = preedit == jianpin and utf8.len(candidate.text) >= 3
@@ -49,14 +55,16 @@ function filter.func(translation, env)
       is_normal_spelling = preedit == shuangpin
     elseif is_four then
       -- 四码时可能是双拼，也可能是简拼
-      is_normal_spelling = preedit == jianpin or preedit == shuangpin or is_character
+      is_normal_spelling = preedit == jianpin or preedit == shuangpin
+        or (utf8.len(candidate.text) == 1 and preedit:len() == 2)
     else
       -- 其他情况是简拼
       is_normal_spelling = preedit == jianpin
     end
-    if not is_phrase or is_normal_spelling then
+    if is_normal_spelling then
       yield(candidate)
     end
+    ::continue::
   end
 end
 

@@ -249,23 +249,23 @@ deploy:
     tests:
       - send: o
         assert: cand[1].text == "📝 开启缓冲" and commit == nil
-      - send: "o "
+      - send: "O "
         assert: commit == nil and preedit == nil
-      - send: "o{Escape}erf "
+      - send: "O{Escape}erf "
         assert: commit == "输入法"
-      - send: "o bgxherf "
+      - send: "O bgxherf "
         assert: commit == nil
-      - send: "o bgxherf  erf "
+      - send: "O bgxherf  erf "
         assert: commit == "冰雪输入法输入法"
-      - send: "o o"
+      - send: "O o"
         assert: cand[1].text == "📝 关闭缓冲" and commit == nil
-      - send: "o o "
+      - send: "O o "
         assert: commit == nil and preedit == nil
-      - send: "o o erf "
+      - send: "O o erf "
         assert: commit == "输入法"
-      - send: "o o{Escape}jp mzua"
+      - send: "O o{Escape}jp mzua"
         assert: commit == nil and cand[1].text == "猫"
-      - send: "o o o jp mzua"
+      - send: "O o o jp mzua"
         assert: commit == nil and cand[1].text == "猫"
   # 高级功能
   advanced:
@@ -274,14 +274,14 @@ deploy:
       - send: ashi
         assert: cand[1].text == "是"
       # 部件全拼反查：连续输入各部件读音，候选同时显示拼音。
-      - send: "uwangyan"
+      - send: "Uwangyan"
         assert: page("琰") and cand[rank("琰")].comment:find("yǎn", 1, true) ~= nil and commit == nil
-      - send: "umaowenniao"
+      - send: "Umaowenniao"
         assert: page("鹜") and cand[rank("鹜")].comment:find("wù", 1, true) ~= nil and commit == nil
       # 单引号结束反查后可正常上屏，退格重输仍留在反查段。
-      - send: "uwangyan' "
+      - send: "Uwangyan' "
         assert: commit == "琰"
-      - send: "uwangyan{BackSpace}n"
+      - send: "Uwangyan{BackSpace}n"
         assert: page("琰") and commit == nil
       # 笔画反查（`u` 引导，横竖撇点折为 viuoa）
       - send: uviuoa
@@ -347,15 +347,15 @@ deploy:
     patch:
       translator/shape_sources: [G]
     tests:
-      - send: "uuooao"
+      - send: "Uuooao"
         assert: has("令")
-      - send: "uuovao"
+      - send: "Uuovao"
         assert: not has("令")
   shape_t:
     patch:
       translator/shape_sources: [T]
     tests:
-      - send: "uuovao"
+      - send: "Uuovao"
         assert: has("令")
-      - send: "uuooao"
+      - send: "Uuooao"
         assert: not has("令")

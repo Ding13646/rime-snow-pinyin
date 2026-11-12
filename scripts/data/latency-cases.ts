@@ -1,4 +1,4 @@
-// 编码先按 ../input 的教程选取，再在首次遍历时校验首页候选或上屏结果。
+// 编码按 flypy21 两键码选取，再在首次遍历时校验首页候选或上屏结果。
 // 不从功能 spec 自动抽取：spec 可能遍历所有候选，而且夹杂补丁、预置词频及故意无效的编码。
 export interface LatencyCase {
 	id: string;
@@ -13,7 +13,7 @@ export const SCHEMA_NAMES: Record<string, string> = {
 	snow_jiandao: "冰雪键道",
 };
 
-const sentence = "充满希望的跋涉比到达目的地更能给人乐趣。";
+const sentence = "剥削输入法负面新闻。";
 
 export const LATENCY_CASES: Record<string, LatencyCase[]> = {
 	snow_jiandao: [
@@ -26,13 +26,13 @@ export const LATENCY_CASES: Record<string, LatencyCase[]> = {
 		},
 		{
 			id: "single-shape",
-			keys: "bgov",
+			keys: "blo",
 			page: "冰",
 			source: "snow-jiandao/basic.md",
 		},
 		{
 			id: "double",
-			keys: "bgxh",
+			keys: "blxr",
 			page: "冰雪",
 			source: "snow-jiandao/basic.md",
 		},
@@ -44,27 +44,15 @@ export const LATENCY_CASES: Record<string, LatencyCase[]> = {
 		},
 		{
 			id: "four",
-			keys: "wmxw",
+			keys: "fmxw",
 			page: "充满希望",
 			source: "snow-jiandao/basic.md",
 		},
 		{
-			id: "long-shape",
-			keys: "kxfquoaaa",
-			page: "科学发展观",
-			source: "snow-jiandao/basic.md；逐字补形见 spec/snow_jiandao.test.yaml",
-		},
-		{
 			id: "long",
-			keys: "fhrmGHG",
+			keys: "whrm",
 			page: "中华人民共和国",
 			source: "snow-jiandao/basic.md",
-		},
-		{
-			id: "mixed",
-			keys: "eJrJfS",
-			page: "输入法",
-			source: "snow-jiandao/index.md；spec/snow_jiandao.test.yaml",
 		},
 		{
 			id: "paging",
@@ -73,26 +61,26 @@ export const LATENCY_CASES: Record<string, LatencyCase[]> = {
 		},
 		{
 			id: "editing",
-			keys: "bgxho{BackSpace}",
+			keys: "blxr{BackSpace}r",
 			page: "冰雪",
 			source: "snow-jiandao/basic.md",
 		},
 		{
 			id: "popping",
-			keys: "kxfqGbgxh",
-			commit: "科学发展观",
+			keys: "blxrd",
+			commit: "剥削",
 			source: "snow-jiandao/basic.md",
 		},
 		{
 			id: "buffered",
-			keys: "bgxherf  ",
-			commit: "冰雪输入法",
+			keys: "blxrejrjfx  ",
+			commit: "剥削输入法",
 			options: ["buffered"],
 			source: "snow-jiandao/basic.md",
 		},
 		{
 			id: "sentence",
-			keys: "wmxwod bseebk dzdsmdd grnrgwrnleql.",
+			keys: "blxrejrjfx fmxw.",
 			commit: sentence,
 			source: "snow-jiandao/index.md",
 		},

@@ -4,6 +4,8 @@ import {
 	appendFileSync,
 	constants,
 	copyFileSync,
+	cpSync,
+	existsSync,
 	mkdirSync,
 	mkdtempSync,
 	readFileSync,
@@ -72,7 +74,9 @@ function copyRimeSource(source: string, dest: string) {
 			clone(join(source, name), join(dest, name));
 	}
 	if (existsSync(join(source, "frost_dicts")))
-		clone(join(source, "frost_dicts"), join(dest, "frost_dicts"));
+		cpSync(join(source, "frost_dicts"), join(dest, "frost_dicts"), {
+			recursive: true,
+		});
 	const reverseBin = join(source, "build", "kMandarin17.reverse.bin");
 	if (existsSync(reverseBin)) {
 		mkdirSync(join(dest, "build"), { recursive: true });

@@ -4,7 +4,7 @@
 schema:
   schema_id: snow_pinyin
   name: 冰雪拼音
-  version: "0.4.0"
+  version: "0.4.1"
   author:
     - 谭淞宸 <i@tansongchen.com>
   description: |
@@ -63,16 +63,11 @@ speller:
     - abbrev/^([zcs]h).+$/$1/
 
 translator:
-  dictionary: snow_pinyin
+  dictionary: rime_frost
   preedit_format:
     - xform/([nl])v/$1ü/
     - xform/([nl])ue/$1üe/
     - xform/([jqxy])v/$1u/
-  packs:
-    - snow_pinyin.base
-    - snow_pinyin.ext
-    - snow_pinyin.tencent
-    - snow_pinyin.user
 
 menu:
   alternative_select_keys: "_09876"
@@ -84,11 +79,11 @@ simplifier:
 
 recognizer:
   patterns:
-    punct: '^i([0-9]0?|[A-Za-z]+)$'
-    pinyin: "^a[a-z]*'?$"
-    stroke: "^u[a-z]*'?$"
-    lua: "^o.*$"
-    history: "^i$"
+    punct: '^/([0-9]0?|[A-Za-z]+)$'
+    pinyin: "^A[a-z]*'?$"
+    stroke: "^U[a-z]*'?$"
+    lua: "^O.*$"
+    history: "^I$"
 
 stroke:
   tag: stroke
@@ -97,7 +92,7 @@ stroke:
   enable_user_dict: false
   enable_sentence: false
   enable_completion: true
-  prefix: "u"
+  prefix: "U"
   suffix: "'"
   tips: 〔笔画·部件〕
   preedit_format:
@@ -114,33 +109,33 @@ radical:
   enable_user_dict: false
   enable_sentence: false
   enable_completion: true
-  prefix: "u"
+  prefix: "U"
   suffix: "'"
   comment_format:
     - erase/^.*$//
 
 pinyin:
   tag: pinyin
-  dictionary: snow_pinyin
-  packs:
-    - snow_pinyin.base
-    - snow_pinyin.ext
+  dictionary: rime_frost
   enable_user_dict: false
   enable_sentence: false
-  prefix: "a"
+  prefix: "A"
   suffix: "'"
   tips: 〔拼音〕
 
 history:
   tag: history
-  input: "i"
+  input: "I"
   size: 5
   initial_quality: -1
+
+lua:
+  input: "O"
 
 lookup_pinyin:
   tags: [stroke]
   overwrite_comment: true
-  dictionary: snow_pinyin
+  dictionary: kMandarin17
   comment_format:
     - xform/([nl])v/$1ü/
 
@@ -172,6 +167,8 @@ key_binder:
     # 翻页
     - { when: has_menu, accept: Tab, send: Page_Down }
     - { when: paging, accept: Shift+Tab, send: Page_Up }
+    - { when: has_menu, accept: minus, send: Page_Up }
+    - { when: has_menu, accept: equal, send: Page_Down }
     # 切换
     - { accept: "Control+Shift+1", select: .next, when: always }
     - { accept: "Control+Shift+2", toggle: ascii_mode, when: always }
@@ -489,3 +486,4 @@ punctuator:
 #韓文+圈/弧
     'ihwq': [ ㉠, ㉡, ㉢, ㉣, ㉤, ㉥, ㉦, ㉧, ㉨, ㉩, ㉪, ㉫, ㉬, ㉭, ㉮, ㉯, ㉰, ㉱, ㉲, ㉳, ㉴, ㉵, ㉶, ㉷, ㉸, ㉹, ㉺, ㉻, ㉼, ㉽, ㉾, ㉿ ]
     'ihwh': [ ㈀, ㈁, ㈂, ㈃, ㈄, ㈅, ㈆, ㈇, ㈈, ㈉, ㈊, ㈋, ㈌, ㈍, ㈎, ㈏, ㈐, ㈑, ㈒, ㈓, ㈔, ㈕, ㈖, ㈗, ㈘, ㈙, ㈚, ㈛, ㈜, ㈝, ㈞ ]
+

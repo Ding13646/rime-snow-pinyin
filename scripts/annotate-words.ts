@@ -11,7 +11,7 @@ function main() {
 	const dictionary = new Map<string, string>();
 	for (const name of ["base", "ext", "tencent"]) {
 		for (const [word, pinyin] of readDictionary(
-			rootPath(`snow_pinyin.${name}.dict.yaml`),
+			rootPath(`frost_dicts/cn_dicts/${name}.dict.yaml`),
 		)) {
 			dictionary.set(word, pinyin);
 		}

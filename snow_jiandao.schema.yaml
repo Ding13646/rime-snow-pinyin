@@ -6,7 +6,7 @@ __include: snow_pinyin.schema.yaml:/
 schema:
   schema_id: snow_jiandao
   name: 冰雪键道
-  version: "0.4.0"
+  version: "0.4.1"
   author:
     - 吅吅大山
     - 谭淞宸 <i@tansongchen.com>
@@ -23,7 +23,9 @@ engine:
   processors:
     - lua_processor@*snow.statistics*processor
     - ascii_composer
+    - lua_processor@*snow.url
     - lua_processor@*snow.shape_processor
+    - lua_processor@*snow.ss*processor
     - lua_processor@*snow.select_character
     - lua_processor@*snow.popping
     - recognizer
@@ -70,12 +72,16 @@ engine:
     - simplifier
     - lua_filter@*snow.hint
     - lua_filter@*snow.unicode*filter
+    - lua_filter@*snow.ss*filter
 
 speller:
   alphabet: bpmfdtnlgkhjqxzcsrwyeBPMFDTNLGKHJQXZCSRWYE
   initials: bpmfdtnlgkhjqxzcsrwye
   delimiter: " "
   shape:
+    # 整句模式下 avuio 参与筛选
+    - match: "^[bpmfdtnlgkhjqxzcsrywe]*$"
+      accept: "[viuoa]"
     - match: "(?:[bpmfdtnlgkhjqxzcsrywe][BPMFDTNLGKHJQXZCSRYWE]?){3,}[viuoa]*"
       accept: "[viuoa]"
     - match: "[bpmfdtnlgkhjqxzcsrywe]{2,4}[viuoa]*"
@@ -83,6 +89,45 @@ speller:
     - match: "[bpmfdtnlgkhjqxzcsrywe][viuoa]*"
       accept: "[viuoa]"
   popping:
+    # 三字词补韵母：仅限 7 种形态，形态本身不含顶屏字母。
+    # 形态后再输入一个小写声母即顶屏，accept 接这个小写声母。
+    # 必须放在最前，避免被“单字和三字词”等宽规则抢先匹配。
+
+    # aAaa + 小写声母，顶屏（已修正 match 长度并去掉 append）
+    - when: popping
+      match: "[bpmfdtnlgkhjqxzcsrywe][BPMFDTNLGKHJQXZCSRYWE][bpmfdtnlgkhjqxzcsrywe]{2}"
+      accept: "[bpmfdtnlgkhjqxzcsrywe]"
+
+    # aaAa + 小写声母，顶屏
+    - when: popping
+      match: "[bpmfdtnlgkhjqxzcsrywe]{2}[BPMFDTNLGKHJQXZCSRYWE][bpmfdtnlgkhjqxzcsrywe]"
+      accept: "[bpmfdtnlgkhjqxzcsrywe]"
+
+    # aaaA + 小写声母，顶屏
+    - when: popping
+      match: "[bpmfdtnlgkhjqxzcsrywe]{3}[BPMFDTNLGKHJQXZCSRYWE]"
+      accept: "[bpmfdtnlgkhjqxzcsrywe]"
+
+    # aAaAa + 小写声母，顶屏
+    - when: popping
+      match: "[bpmfdtnlgkhjqxzcsrywe][BPMFDTNLGKHJQXZCSRYWE][bpmfdtnlgkhjqxzcsrywe][BPMFDTNLGKHJQXZCSRYWE][bpmfdtnlgkhjqxzcsrywe]"
+      accept: "[bpmfdtnlgkhjqxzcsrywe]"
+
+    # aAaaA + 小写声母，顶屏
+    - when: popping
+      match: "[bpmfdtnlgkhjqxzcsrywe][BPMFDTNLGKHJQXZCSRYWE][bpmfdtnlgkhjqxzcsrywe]{2}[BPMFDTNLGKHJQXZCSRYWE]"
+      accept: "[bpmfdtnlgkhjqxzcsrywe]"
+
+    # aaAaA + 小写声母，顶屏
+    - when: popping
+      match: "[bpmfdtnlgkhjqxzcsrywe]{2}[BPMFDTNLGKHJQXZCSRYWE][bpmfdtnlgkhjqxzcsrywe][BPMFDTNLGKHJQXZCSRYWE]"
+      accept: "[bpmfdtnlgkhjqxzcsrywe]"
+
+    # aAaAaA + 小写声母，顶屏
+    - when: popping
+      match: "[bpmfdtnlgkhjqxzcsrywe][BPMFDTNLGKHJQXZCSRYWE][bpmfdtnlgkhjqxzcsrywe][BPMFDTNLGKHJQXZCSRYWE][bpmfdtnlgkhjqxzcsrywe][BPMFDTNLGKHJQXZCSRYWE]"
+      accept: "[bpmfdtnlgkhjqxzcsrywe]"
+
     # 四顶模式
     # 630
     - when: popping
@@ -118,7 +163,7 @@ speller:
     - match: ".*[a-z0-9]"
       accept: "[^a-z0-9 ]"
   algebra:
-    __include: snow_jiandao_algebra.yaml:/jiandao_algebra
+    __include: snow_algebra.yaml:/flypy21
     __append:
       # 英数字母的音节码；改动时 snow_jiandao_jianpin 的 algebra 要跟着改
       - xform/~{1,2}([bpmfdtnlgkhjqxzcsrywe])/$1e/
@@ -131,20 +176,15 @@ speller:
 
 jianpin:
   tag: jianpin
-  dictionary: snow_pinyin
+  dictionary: rime_frost
   prism: snow_jiandao_jianpin
-  packs:
-    - snow_pinyin.base
-    - snow_pinyin.ext
-    - snow_pinyin.tencent
-    - snow_pinyin.user
 
 lookup_jiandao:
   tags: [pinyin]
   overwrite_comment: true
-  dictionary: snow_pinyin
+  dictionary: rime_frost
   comment_format:
-    __include: snow_jiandao_algebra.yaml:/jiandao_algebra
+    __include: snow_algebra.yaml:/flypy21
     __append:
       - xform/q([zhe])/f$1/
       - xform/[viuoa]( |$)/$1/ # 无声调
@@ -154,32 +194,43 @@ __patch:
   - snow_jiandao.custom:/patch?
 
 patch:
-  switches/+:
-    - name: popping
-      states: [整句, 顶功]
-      reset: 1
-    - name: chaifen
-      states: [默认, 拆分]
-      reset: 0
-    - name: buffered
-      states: [结束, 缓冲]
-      reset: 0
-    - name: unicode
-      states: [隐藏, 注解]
-      reset: 0
-    - name: add
-      states: [结束, 加词]
-      reset: 0
+  switches:
+    __include: snow_pinyin.schema.yaml:/switches
+    __append:
+      - name: popping
+        states: [整句, 顶功]
+        reset: 1
+      - name: chaifen
+        states: [默认, 拆分]
+        reset: 0
+      - name: buffered
+        states: [结束, 缓冲]
+        reset: 0
+      - name: unicode
+        states: [隐藏, 注解]
+        reset: 0
+      - name: add
+        states: [结束, 加词]
+        reset: 0
+      - name: ss
+        states: [关闭, 开启]
+        reset: 1
   translator/prism: snow_jiandao
   translator/preedit_format: null
   translator/enable_schema_user_dict: true
   translator/shape_elements: snow_jiandao_chaifen
   translator/shape_mapping: "radical_jiandao.txt"
-  key_binder/bindings/+:
-    - { when: always, accept: "Control+j", toggle: buffered }
-    - { when: always, accept: "Control+u", toggle: unicode }
-    - { when: always, accept: "Control+t", toggle: chaifen }
+  key_binder:
+    bindings:
+      __include: snow_pinyin.schema.yaml:/key_binder/bindings
+      __append:
+        - { when: always, accept: "Control+j", toggle: buffered }
+        - { when: always, accept: "Control+u", toggle: unicode }
+        - { when: always, accept: "Control+t", toggle: chaifen }
+        - { when: always, accept: "Control+Shift+s", toggle: ss }
   menu/alternative_select_keys: null
   recognizer/patterns/jianpin: "^(?:[bpmfdtnlgkhjqxzcsrywe][BPMFDTNLGKHJQXZCSRYWE]?){3,}$"
+  recognizer/patterns/url: "^(www[.]|https?:|ftp[.:]|mailto:|file:).*$"
   stroke/prism: snow_jiandao_bihua
   stroke/preedit_format: [xlit/viuoa/一丨丿丶乙/]
+  __include: grammar:/hans # 八股文模型

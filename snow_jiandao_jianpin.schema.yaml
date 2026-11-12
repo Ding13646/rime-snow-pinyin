@@ -6,7 +6,7 @@ __include: snow_pinyin.schema.yaml:/
 schema:
   schema_id: snow_jiandao_jianpin
   name: 冰雪键道简拼
-  version: "0.4.0"
+  version: "0.4.1"
   author:
     - 吅吅大山
     - 谭淞宸 <i@tansongchen.com>
@@ -43,7 +43,7 @@ speller:
   alphabet: bpmfdtnlgkhjqxzcsrwye
   delimiter: " '"
   algebra:
-    __include: snow_jiandao_algebra.yaml:/jiandao_algebra
+    __include: snow_algebra.yaml:/flypy21
     __append:
       # 英数字母的伪音节（`~x` / `~~x`）也要缩得出声母，否则英数混输造出来的词
       # 在声母编码下查不到。键道的字母音节码是 `<声>e` / `x<韵>`，改动字母规则时
@@ -54,8 +54,8 @@ speller:
       - xform/~{1,2}u/xj/
       - xform/~{1,2}o/xl/
       - xform/~{1,2}a/xs/
-      # 声母后可接大写韵母，供三字及以上词补韵母
-      - derive/^(.)(.)[viuoa]$/$1\u$2/
+      # 声母后可接大写韵母（flypy21 音节为声母键+韵母键两码），供三字及以上词补韵母
+      - derive/^(.)(.)$/$1\u$2/
       - derive/.([viuoa])$/?$1/ # 无韵母
       - xform/^([bpmfdtnlgkhjqxzcsrywe])[bpmfdtnlgkhjqxzcsrywe][viuoa]?$/$1/ # 简拼，保留带大写韵母的拼写
       - derive/^.+$/~/ # 通配符

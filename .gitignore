@@ -2,8 +2,10 @@ node_modules
 .DS_Store
 diff
 stroke.*
-build
+/build/*
+!/build/kMandarin17.reverse.bin
 *.userdb
+!/predict.userdb
 installation.yaml
 user.yaml
 output/

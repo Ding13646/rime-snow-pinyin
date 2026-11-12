@@ -1,8 +1,8 @@
-# 冰雪键道开发约定
+# 冰雪拼音开发约定
 
 ## 通用约定
 
-始终用中文回复。方案名称为「冰雪键道」，`schema_id` 为 `snow_jiandao`。
+始终用中文回复。仓库包含五个方案：冰雪键道（`snow_jiandao`，顶功）、冰雪小鹤（`snow_flypy`，无顶功）、冰雪林氏17（`snow_lx17`）、冰雪格道17（`snow_gd17`）、冰雪16宫格（`snow_16gong`）；后四个基于双拼，参考键道生成。
 
 Markdown 每个段落、列表项各写一行，不按行宽硬换行；只在段落、列表项、标题、表格行、代码块之间换行。列表项的第二段空一行并缩进；代码块和 YAML 注释不受此限。
 
@@ -12,7 +12,7 @@ Markdown 每个段落、列表项各写一行，不按行宽硬换行；只在�
 
 外部方案子模块统一在 `deps/`：雾凇拼音为 `rime-ice`（生成词库用），部件全拼为 `rime-radical-pinyin`。首次克隆或更新依赖后运行 `git submodule update --init deps/rime-radical-pinyin`。
 
-冰雪键道用 `u` 引导笔画与部件反查，`lookup_pinyin` 显示读音，`lookup_jiandao` 显示形码拆解。
+各方案用大写字母引导反查：`U` 引导笔画反查与部件全拼反查（`lookup_pinyin` 显示带调读音，键道另有 `lookup_<方案>` 显示形码拆解），`A` 引导拼音反查；`/` 引导符号，`O` 引导 lua 命令（缓冲、数字、计算、日期、统计，前缀由 `lua/input` 配置），`I` 重复上屏。小写字母让给声声词扩充码。
 
 `radical_pinyin.schema.yaml`、`radical_pinyin.dict.yaml` 由子模块提供：本机软链指向原文件，发布、测试和 iCloud 同步时复制到方案目录根目录。不要手改或提交根目录副本。
 
@@ -22,7 +22,7 @@ bun scripts/link.ts unlink    # 还原成独立副本
 bun scripts/link.ts sync      # 手动单向镜像到 iCloud，并重新打包
 ```
 
-- `~/.local/share/fcitx5/rime` 的 `snow_*.schema.yaml`、`snow_*.dict.yaml`、`snow_*.fixed.txt`、`snow_jiandao_algebra.yaml` 和 `lua/snow` 是本仓库软链，修改后只需重新部署，**不需要同步**；修改 Lua 后部署会重建状态并重新 `require`，无需重启输入法。
+- `~/.local/share/fcitx5/rime` 的 `snow_*.schema.yaml`、`snow_*.dict.yaml`、`snow_*.fixed.txt`、`snow_*_ss.txt`、`snow_algebra.yaml`、`grammar.yaml`、`rime_frost.dict.yaml`、`frost_dicts/`、`predict.userdb` 和 `lua/snow` 是本仓库软链，修改后只需重新部署，**不需要同步**；修改 Lua 后部署会重建状态并重新 `require`，无需重启输入法。
 - iOS 元书方案位于 iCloud 的 `RimeUserData/rime-snow-pinyin`。iCloud 不跟随软链，`sync` 仅复制有变化的文件并清理已删除项；需要在 iOS 使用改动时手动运行。它还用系统 `zip` 替换 `~/Library/Mobile Documents/iCloud~com~ihsiao~apps~Hamster3/Documents/sync/rime-snow-pinyin.zip`，保留相对路径。Android 元书通过应用导入方案。
 - `.gitignore` 排除的 `*.custom.yaml`、`*.userdb`、`build/`、`user.yaml`、`installation.yaml` 各自独立，在仓库跑 mira 不会污染实际词频。
 
@@ -48,6 +48,8 @@ bun run --cwd scripts check:format    # 检查格式
 
 词典生成默认更新仓库产物，审阅时指定临时路径，例如 `bun scripts/generate-word-dicts.ts base --output-dir /tmp/snow-word-dicts`；诊断文件随输出写入 `diff/`。注音逻辑在 `lib/word-pinyin.ts`，按需初始化且不写文件；`data/word-pinyin-overrides.tsv` 修正词语读音，`data/complete-pinyin-overrides.tsv` 修正 pinyin-pro 完整词库。
 
+运行时词库已改为 `rime_frost`（`rime_frost.dict.yaml` 与 `frost_dicts/`）；`generate-pinyin-dict.ts`、`generate-word-dicts.ts` 生成的 `snow_pinyin.*.dict.yaml` 不再随包分发。
+
 ### 皮肤
 
 `bun scripts/generate-skins.ts [输出目录] [--backend hamster|trime|all] [--trime-toolbar-width 按键总宽度dp]` 生成冰雪键道的 35 键皮肤（含无刻版），默认 `all`，输出到调用目录的 `output/skins/{hamster,trime}/`。单后端直接写入指定目录；显式选 `--backend hamster` 且不传目录时，写入 iOS 元书的 `.../Hamster3/Documents/Skins/`。Android 或审阅产物应显式指定目录，如 `/tmp/snow-skins`。
@@ -72,7 +74,13 @@ bun scripts/version.ts          # 查看版本
 bun scripts/version.ts --check  # 检查全部 YAML 版本；可再传入发布标签核对
 ```
 
-发布前必须通过功能、词典和性能门禁，并核对标签与全部版本号一致。`release.yml` 打包 `snow-pinyin.zip`、皮肤包和预览安装包；`snow_jiandao_algebra.yaml` 随 `snow_*` 一并进入压缩包，`recipe.yaml` 的 `install_files` 也显式包含它。
+发布前必须通过功能、词典和性能门禁，并核对标签与全部版本号一致。`release.yml` 打包 `snow-pinyin.zip`、皮肤包和预览安装包；`snow_algebra.yaml`、`grammar.yaml`、`rime_frost.dict.yaml`、`frost_dicts/`、`predict.userdb`、`default.custom.yaml`、`squirrel.custom.yaml` 随压缩包分发，`recipe.yaml` 的 `install_files` 也显式包含它们。
+
+声声词表 `snow_<方案>_ss.txt` 由 `top_1000_2_and_3_words.txt` 生成：二三字词前 1000 名按各方案声母首键映射编码，编码相同取词频权重大者；码为 1-4 个声母键，引号与 Tab 等效上屏。`ss.lua` 按 `schema_id` 选择词表与首键集合（`SCHEMAS`），新增方案时补一项。
+
+冰雪小鹤通过 `predictor` 处理器 + `predict_translator` 翻译器 + `prediction` 开关接入 librime-predict（`predictor/db` 指向 `predict.userdb`），上屏后按用户历史预测下一个词；mira 下该流程会挂起，验证依赖实机。
+
+`build/kMandarin17.reverse.bin` 是预编译的反查注音库，`lookup_pinyin` 通过它给 `stroke` 段的反查候选注音；它由 `.gitignore` 单独放行并随用户包分发，发版用户包的 `build/` 里只保留这一个文件，不要删除。
 
 ## 笔画与地区字形
 
@@ -189,13 +197,15 @@ echo '{"diagnostics.groupFileStatus":{"strict":"Any","strong":"Any"},"diagnostic
 
 ## 组件顺序
 
-冰雪键道的组件顺序如下，不要仅按多数现状判断。`statistics` 必须第一，看到被其他组件吃掉的每个键；`shape_processor` 在 `popping`、`key_binder` 前，辅助码键可触发顶屏；`select_character` 在 `popping` 前，`[`、`]` 命中标点大写顶；`popping` 在 `recognizer` 前，键道无前缀 `jianpin` 会匹配普通编码并 `PushInput`，放前会让 3 码以上顶功静默失效；`user_dict` 在 `key_binder` 前，`Control+bracketleft` 绑定 Escape。
+冰雪键道的组件顺序如下，不要仅按多数现状判断。`statistics` 必须第一，看到被其他组件吃掉的每个键；`url` 在 `shape_processor` 前，URL 关键字里的 a/i/o 不能被辅助码筛选规则吃掉；`shape_processor` 在 `popping`、`key_binder` 前，辅助码键可触发顶屏；`ss` 在 `popping` 前，两码状态拦截引号直接上屏声声词；`select_character` 在 `popping` 前，`[`、`]` 命中标点大写顶；`popping` 在 `recognizer` 前，键道无前缀 `jianpin` 会匹配普通编码并 `PushInput`，放前会让 3 码以上顶功静默失效；`user_dict` 在 `key_binder` 前，`Control+bracketleft` 绑定 Escape。
 
 ```yaml
   processors:
     - lua_processor@*snow.statistics*processor
     - ascii_composer
+    - lua_processor@*snow.url
     - lua_processor@*snow.shape_processor
+    - lua_processor@*snow.ss*processor
     - lua_processor@*snow.select_character
     - lua_processor@*snow.popping
     - recognizer
@@ -242,6 +252,7 @@ echo '{"diagnostics.groupFileStatus":{"strict":"Any","strong":"Any"},"diagnostic
     - simplifier
     - lua_filter@*snow.hint
     - lua_filter@*snow.unicode*filter
+    - lua_filter@*snow.ss*filter
 ```
 
 改 preedit 的 filter 必须在 `uniquifier` 前：`UniquifiedCandidate::preedit()` 恒返回首个被合并候选的 preedit，包装器上的修改会丢失；`comment` 不受影响。改 processors 必须跑 `bun scripts/test.ts`。
@@ -250,4 +261,6 @@ echo '{"diagnostics.groupFileStatus":{"strict":"Any","strong":"Any"},"diagnostic
 
 冰雪键道的简拼由 `snow_jiandao_jianpin` 提供，键为单声母；三字及以上词可用「声母 + 大写韵母」补韵母（如 `wH`）。棱镜的字母声母规则必须与主方案一致：辅音为该字母，元音为 `x`；改动字母规则时同步修改 `snow_jiandao.schema.yaml` 与 `snow_jiandao_jianpin.schema.yaml` 的 algebra。
 
-`jiandao_algebra` 已从三拼抽出到 `snow_jiandao_algebra.yaml`，两处 `__include` 与 `scripts/lib/pinyin-validation.ts` 都以它为唯一来源；新增或修改声母飞键、韵母规则时只改这一份。
+`flypy21` 定义在 `snow_algebra.yaml`，主方案与简拼棱镜都通过 `__include` 引用它；新增或修改声母键、韵母键时只改这一份。简拼的大写韵母 `derive` 按两键码生成，若改回三键码需同步调整。文件内还保留 `jd6`（键道声韵两键运算，声调在运算中被吸收，可直接配合两键大写韵母派生）以及 `lx17`、`gd17`、`16gong`、`flypy_legacy` 等备用方案。
+
+冰雪小鹤使用 `snow_flypy_jianpin`，主方案与棱镜都引用 `snow_algebra.yaml:/flypy`（标准小鹤双拼）；它的声声词词表是 `snow_flypy_ss.txt`，首键按 zh→v、ch→i、sh→u、零声母取 a/o/e 映射。`ss.lua` 按 `schema_id` 选择词表和首键集合，新增方案时在 `SCHEMAS` 里补一项。小鹤不启用 popping，标点由 Rime 默认行为上屏；URL 只靠 `recognizer/patterns/url`，不挂 `snow.url`。`ss.lua` 的 `require_popping` 区分两方案：键道要求顶功，小鹤不需要。

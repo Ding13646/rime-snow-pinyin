@@ -35,7 +35,7 @@ jobs:
       - name: 打包用户安装包
         run: |
           cp deps/rime-radical-pinyin/radical_pinyin.{schema,dict}.yaml .
-          zip -r snow-pinyin.zip snow_* radical_pinyin.*.yaml lua
+          zip -r snow-pinyin.zip snow_* grammar.yaml default.custom.yaml squirrel.custom.yaml rime_frost.dict.yaml frost_dicts radical_pinyin.*.yaml lua predict.userdb build/kMandarin17.reverse.bin
       - name: 安装皮肤生成依赖
         run: bun install --cwd scripts --frozen-lockfile
       - name: 检查冰雪键道的全部拼音音节编码

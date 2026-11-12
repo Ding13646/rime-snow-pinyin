@@ -3,7 +3,7 @@
 recipe:
   Rx: snow_pinyin
   description: >-
-    安装冰雪拼音的方案、词库、固定词表、Lua 组件及部件反查依赖
+    安装冰雪键道的方案、rime_frost 词库、固定词表、Lua 组件及部件反查依赖
 
 # 与 deps/rime-radical-pinyin 的提交保持一致。
 download_files:
@@ -14,7 +14,15 @@ install_files:
   - snow_*.schema.yaml
   - snow_*.dict.yaml
   - snow_*.fixed.txt
-  - snow_jiandao_algebra.yaml
+  - snow_jiandao_ss.txt
+  - snow_flypy_ss.txt
+  - snow_algebra.yaml
+  - grammar.yaml
+  - default.custom.yaml
+  - squirrel.custom.yaml
+  - rime_frost.dict.yaml
+  - predict.userdb
+  - frost_dicts/**/*.dict.yaml
   - lua/snow/*
   - radical_pinyin.schema.yaml
   - radical_pinyin.dict.yaml

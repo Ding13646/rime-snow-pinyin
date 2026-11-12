@@ -40,7 +40,11 @@ const FILE_PATTERNS = [
 	"snow_*.schema.yaml",
 	"snow_*.dict.yaml",
 	"snow_*.fixed.txt",
-	"snow_jiandao_algebra.yaml",
+	"snow_jiandao_ss.txt",
+	"snow_flypy_ss.txt",
+	"snow_algebra.yaml",
+	"grammar.yaml",
+	"rime_frost.dict.yaml",
 ];
 
 function isLink(path: string): boolean {
@@ -75,6 +79,11 @@ function pairs(): { src: string; dest: string }[] {
 	list.push({
 		src: join(ROOT, "lua", "snow"),
 		dest: join(USER_DIR, "lua", "snow"),
+	});
+	// rime_frost 的导入表是整棵目录树，直接软链目录
+	list.push({
+		src: join(ROOT, "frost_dicts"),
+		dest: join(USER_DIR, "frost_dicts"),
 	});
 	return list;
 }

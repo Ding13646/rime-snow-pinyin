@@ -7,7 +7,7 @@ import {
 
 export function checkPinyinDictionary() {
 	const count = checkPinyinReadings(
-		readDictionary(rootPath("snow_pinyin.dict.yaml")).map(
+		readDictionary(rootPath("frost_dicts/cn_dicts/8105.dict.yaml")).map(
 			([, pinyin]) => pinyin,
 		),
 	);

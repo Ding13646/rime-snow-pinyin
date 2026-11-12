@@ -1,0 +1,43 @@
+# Rime dictionary
+# encoding: utf-8
+
+---
+name: rime_frost
+version: "2023-11-13"
+import_tables:
+  - frost_dicts/cn_dicts/8105     # 字表
+  #- frost_dicts/cn_dicts/41448  # 大字表（按需启用）
+  - frost_dicts/cn_dicts/base     # 基础词库
+  - frost_dicts/cn_dicts/ext      # 扩展词库
+  # - frost_dicts/cn_dicts/tencent  # 腾讯词向量（大词库，部署时间较长）
+  - frost_dicts/cn_dicts/others   # 一些杂项
+  - frost_dicts/cn_dicts/corrections # 错音错字提示
+
+  # 细胞词库
+  - frost_dicts/cn_dicts_cell/medication
+  - frost_dicts/cn_dicts_cell/industry_product
+  - frost_dicts/cn_dicts_cell/exthot
+  - frost_dicts/cn_dicts_cell/chess
+  - frost_dicts/cn_dicts_cell/chess2
+  - frost_dicts/cn_dicts_cell/animal
+  - frost_dicts/cn_dicts_cell/game
+  - frost_dicts/cn_dicts_cell/idiom
+  - frost_dicts/cn_dicts_cell/sport
+  - frost_dicts/cn_dicts_cell/media
+  - frost_dicts/cn_dicts_cell/shulihua
+  - frost_dicts/cn_dicts_cell/food
+  - frost_dicts/cn_dicts_cell/inputmethod
+  - frost_dicts/cn_dicts_cell/history
+  - frost_dicts/cn_dicts_cell/place
+  - frost_dicts/cn_dicts_cell/geography
+  - frost_dicts/cn_dicts_cell/name2
+  - frost_dicts/cn_dicts_cell/literature
+  - frost_dicts/cn_dicts_cell/music
+  - frost_dicts/cn_dicts_cell/computer
+  - frost_dicts/cn_dicts_cell/composite
+  - frost_dicts/cn_dicts_cell/luna
+  - frost_dicts/cn_dicts_cell/name
+...
+
+
+

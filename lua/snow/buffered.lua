@@ -35,7 +35,7 @@ end
 ---@param segment Segment
 ---@param env BufferedEnv
 function translator.func(input, segment, env)
-  if input == "o" and segment.start == 0 and env.engine.context.input == "o" then
+  if input == "O" and segment.start == 0 and env.engine.context.input == "O" then
     local text = env.engine.context:get_option("buffered") and "📝 关闭缓冲" or "📝 开启缓冲"
     yield(Candidate("buffered", segment.start, segment._end, text, ""))
   end

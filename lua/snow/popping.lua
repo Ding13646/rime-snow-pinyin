@@ -176,7 +176,16 @@ function processor.func(key_event, env)
   if key_event:release() or key_event:alt() or key_event:ctrl() or key_event:caps() then
     return snow.kNoop
   end
-  local incoming = utf8.char(key_event.keycode)
+  -- Tab、翻页、方向键、退格等特殊键交给 key_binder 和编辑器，不参与顶屏
+  local keycode = key_event.keycode
+  if keycode ~= snow.kSpace and (keycode < 0x20 or keycode > 0x7e) then
+    return snow.kNoop
+  end
+  -- - / = 用于翻页，同样不参与顶屏
+  if keycode == string.byte("-") or keycode == string.byte("=") then
+    return snow.kNoop
+  end
+  local incoming = utf8.char(keycode)
   -- 如果输入为空格或数字，代表着作文即将上屏，此时把 kConfirmed 的片段改为 kSelected
   -- 这解决了 https://github.com/rime/home/issues/276 中的不造词问题
   if rime_api.regex_match(incoming, "\\d") or key_event.keycode == snow.kSpace then

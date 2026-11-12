@@ -1,0 +1,58 @@
+# Rime schema
+# encoding: utf-8
+
+__include: snow_pinyin.schema.yaml:/
+
+schema:
+  schema_id: snow_flypy_jianpin
+  name: 冰雪小鹤简拼
+  version: "0.4.1"
+  author:
+    - 吅吅大山
+    - 谭淞宸 <i@tansongchen.com>
+  description: |
+    用于辅助冰雪小鹤，非常规方案
+  dependencies:
+    - snow_pinyin
+
+engine:
+  processors:
+    - ascii_composer
+    - recognizer
+    - key_binder
+    - speller
+    - punctuator
+    - selector
+    - navigator
+    - express_editor
+  segmentors:
+    - ascii_segmentor
+    - matcher
+    - abc_segmentor
+    - punct_segmentor
+    - fallback_segmentor
+  translators:
+    - punct_translator
+    - script_translator
+    - history_translator
+  filters:
+    - uniquifier
+    - simplifier
+
+speller:
+  alphabet: bpmfdtnlgkhjqxzcsrywvaeiou
+  delimiter: " '"
+  algebra:
+    __include: snow_algebra.yaml:/flypy
+    __append:
+      # 声母后可接大写韵母（声母键+韵母键两码），供三字及以上词补韵母
+      - derive/^(.)(.)$/$1\u$2/
+      - xform/^([a-z])[a-z]*$/$1/ # 简拼，保留带大写韵母的拼写
+      - derive/^.+$/~/ # 通配符
+
+__patch:
+  - patch
+  - snow_flypy_jianpin.custom:/patch?
+
+patch:
+  translator/prism: snow_flypy_jianpin

@@ -18,7 +18,7 @@ export function readDictionary(path: string): string[][] {
 export function readCharacterDictionary() {
 	const dict = new Map<string, string[]>();
 	for (const [word, pinyin] of readDictionary(
-		rootPath("snow_pinyin.dict.yaml"),
+		rootPath("frost_dicts/cn_dicts/8105.dict.yaml"),
 	)) {
 		if ([...word].length !== 1 || /^[a-zA-Z0-9]$/.test(word)) continue;
 		dict.set(word, (dict.get(word) ?? []).concat(pinyin));

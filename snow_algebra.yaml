@@ -1,0 +1,393 @@
+# encoding: utf-8
+---
+# 拼写运算合集：键道当前使用 flypy21；jd6、lx17、gd17、16gong、flypy 保留备用。
+
+# ==========================================
+# 1. 小鹤21键方案 (flypy21_algebra，配合键道用)
+# ==========================================
+flypy21:
+  # 1. 音调预处理
+  - xlit/āáǎàōóǒòēéěèīíǐìūúǔùǖǘǚǜü/aaaaooooeeeeiiiiuuuuvvvvv/
+
+  # 2. 特殊规则
+  - xform/(?<=[jqxy])u(e?\d?)/v$1/
+  - xform/(^| )([aoe]|[mn]g?\d)/$1C$2/
+
+  # 3. 声母合并 (按键压缩)
+  - xform/zh/W/
+  - xform/sh/E/
+  - xform/ch/F/
+
+  # 4. 复合韵母
+  - xform/iang\d?/F/
+  - xform/uang\d?/M/
+  - xform/i?ong\d?/S/
+  - xform/iao\d?/N/
+  - xform/uai\d?/P/
+  - xform/(uan|van)\d?/T/
+  - xform/ing\d?/L/
+  - xform/eng\d?/G/
+  - xform/ang\d?/H/
+  - xform/ian\d?/M/
+  - xform/(ve|ue)\d?/R/
+  - xform/(un|vn)\d?/Y/
+  - xform/ie\d?/P/
+  - xform/ai\d?/D/
+  - xform/en\d?/F/
+  - xform/an\d?/R/
+  - xform/iu\d?/Q/
+  - xform/ei\d?/W/
+  - xform/[iu]a\d?/X/
+  - xform/ou\d?/Z/
+  - xform/ao\d?/C/
+  - xform/(in|ui)\d?/B/
+  - xform/uo\d?/L/
+  - xform/er\d?/M/
+
+  # 5. 单韵母
+  - xform/e\d?/E/
+  - xform/a\d?/X/
+  - xform/o\d?/L/
+  - xform/(u|v)\d?/J/
+  - xform/i\d?/K/
+  
+
+  # 6. 统一转换为小写收尾
+  - xlit/QWERTYUIOPASDFGHJKLZXCVBNM/qwertyuiopasdfghjklzxcvbnm/
+
+    # 声调
+  - xlit/12345/viuoa/
+
+
+# ==========================================
+# 2. 乱序17方案 (luanxu17_algebra)
+# ==========================================
+lx17:
+  # 1. 音调预处理
+  - xlit/āáǎàōóǒòēéěèīíǐìūúǔùǖǘǚǜü/aaaaooooeeeeiiiiuuuuvvvvv/
+  
+  # 2. 特殊零声母处理
+  - xform/^ng$/eng/
+  - xform/ńg|ňg|ǹg/eng/
+  - xform/ń|ň|ǹ/en/
+  - xform/ḿ/me/
+  - erase/^xx$/
+  - derive/^([jqxy])u/$1V/
+  
+  # 3. 声母映射转换
+  - xform/^ch/C/
+  - xform/^c/F/
+  - xform/^k/J/
+  - xform/^([aoe].*)$/Q$1/
+  - xform/^p/H/
+  - xform/^r/N/
+  - xform/^sh/S/
+  - xform/^s/M/
+  - xform/^zh/Z/
+  - xform/^z/W/
+  
+  # 4. 复合韵母映射
+  - xform/uang\d?/Q/
+  - xform/iang\d?/C/
+  - xform/iong\d?/B/
+  - xform/ang\d?/Z/
+  - xform/eng\d?/Y/
+  - xform/ian\d?/Q/
+  - xform/iao\d?/Z/
+  - xform/ing\d?/Y/
+  - xform/ong\d?/T/
+  - xform/uai\d?/X/
+  - xform/uan\d?/X/
+  - xform/ai\d?/L/
+  - xform/an\d?/N/
+  - xform/ao\d?/B/
+  - xform/ei\d?/G/
+  - xform/en\d?/S/
+  - xform/er\d?/T/
+  - xform/ua\d?/H/
+  - xform/ie\d?/M/
+  - xform/in\d?/S/
+  - xform/iu\d?/F/
+  - xform/ou\d?/F/
+  - xform/ia\d?/H/
+  - xform/[uv]e\d?/L/
+  - xform/ui\d?/C/
+  - xform/un\d?/G/
+  - xform/uo\d?/M/
+  
+  # 5. 单韵母映射
+  - xform/a\d?/H/
+  - xform/e\d?/W/
+  - xform/i\d?/J/
+  - xform/o\d?/X/
+  - xform/u\d?/D/
+  - xform/v\d?/X/
+
+  # 6. 统一转换为小写收尾
+  - xlit/QWERTYUIOPASDFGHJKLZXCVBNM/qwertyuiopasdfghjklzxcvbnm/
+
+
+# ==========================================
+# 3. 格道17方案 (gedao17_algebra)
+# ==========================================
+gd17:
+  # 1. 音调预处理
+  - xlit/āáǎàōóǒòēéěèīíǐìūúǔùǖǘǚǜü/aaaaooooeeeeiiiiuuuuvvvvv/
+
+  # 2. 特殊零声母与极端情况处理
+  - xform/^ng$/eng/
+  - xform/ńg|ňg|ǹg/eng/
+  - xform/ń|ň|ǹ/en/
+  - xform/ḿ/me/
+  - erase/^xx$/
+  - derive/^([jqxy])u$/$1V/
+
+  # 3. 声母映射转换
+  - xform/^k/P/
+  - xform/^r/T/
+  - xform/^h/N/
+  - xform/^([aoe].*)$/Q$1/    
+  - xform/^ch/C/
+  - xform/^c/M/
+  - xform/^zh/Z/
+  - xform/^z/F/
+  - xform/^sh/S/
+  - xform/^s/W/
+
+  # 4. 复合韵母映射
+  - xform/uang\d?/Q/
+  - xform/iang\d?/Z/
+  - xform/iong\d?/B/
+  - xform/ang\d?/F/
+  - xform/eng\d?/S/
+  - xform/ian\d?/Q/
+  - xform/iao\d?/X/
+  - xform/ing\d?/Y/
+  - xform/ong\d?/T/
+  - xform/uai\d?/P/
+  - xform/uan\d?/M/
+  - xform/ai\d?/L/
+  - xform/an\d?/W/
+  - xform/ao\d?/B/
+  - xform/ei\d?/P/
+  - xform/en\d?/Z/
+  - xform/er\d?/F/
+  - xform/ua\d?/F/
+  - xform/ie\d?/S/
+  - xform/in\d?/G/
+  - xform/iu\d?/T/
+  - xform/ou\d?/X/
+  - xform/ia\d?/C/
+  - xform/[uv]e\d?/L/
+  - xform/ui\d?/G/
+  - xform/un\d?/P/
+  - xform/uo\d?/Y/
+
+  # 5. 单韵母映射
+  - xform/a\d?/C/
+  - xform/e\d?/N/
+  - xform/i\d?/J/
+  - xform/o\d?/M/
+  - xform/u\d?/D/
+  - xform/v\d?/M/
+
+  # 6. 统一转换为小写收尾
+  - xlit/QWERTYUIOPASDFGHJKLZXCVBNM/qwertyuiopasdfghjklzxcvbnm/
+
+
+
+# # ==========================================
+# 4. 16gong方案 (16gong_algebra)
+# ==========================================
+16gong:
+  # 1. 音调预处理
+  - xlit/āáǎàōóǒòēéěèīíǐìūúǔùǖǘǚǜü/aaaaooooeeeeiiiiuuuuvvvvv/
+
+  # 2. 特殊零声母与极端情况处理
+  - xform/^ng$/eng/
+  - xform/ńg|ňg|ǹg/eng/
+  - xform/ń|ň|ǹ/en/
+  - xform/ḿ/me/
+  - erase/^xx$/
+  - derive/^([jqxy])u$/$1v/
+
+  # 3. 声母映射转换
+  - xform/^([aoe].*)$/X$1/
+  - xform/^m/C/
+  - xform/^t/R/
+  - xform/^j/F/
+  - xform/^zh/Z/
+  - xform/^ch/P/
+  - xform/^sh/S/
+  - xform/^z/H/
+  - xform/^s/K/
+  - xform/^w/Q/
+
+  # 4. 复合韵母映射
+  - xform/iang\d?/R/
+  - xform/iong\d?/Q/
+  - xform/uang\d?/X/
+  - xform/ang\d?/B/
+  - xform/ong\d?/L/
+  - xform/eng\d?/Q/
+  - xform/ian\d?/K/
+  - xform/iao\d?/B/
+  - xform/ing\d?/H/
+  - xform/uai\d?/K/
+  - xform/uan\d?/P/
+  - xform/ai\d?/Z/
+  - xform/an\d?/C/
+  - xform/ao\d?/R/
+  - xform/ou\d?/S/
+  - xform/ei\d?/L/
+  - xform/en\d?/F/
+  - xform/er\d?/L/
+  - xform/ia\d?/F/
+  - xform/ie\d?/P/
+  - xform/in\d?/Y/
+  - xform/iu\d?/S/
+  - xform/ua\d?/K/
+  - xform/ue\d?/Z/
+  - xform/ui\d?/H/
+  - xform/un\d?/Q/
+  - xform/uo\d?/Y/
+  - xform/ve\d?/Z/
+
+  # 5. 单韵母映射
+  - xform/a\d?/X/
+  - xform/o\d?/D/
+  - xform/e\d?/D/
+  - xform/i\d?/N/
+  - xform/u\d?/G/
+  - xform/v\d?/F/
+
+  # 6. 统一转换为小写收尾
+  - xlit/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/
+
+
+
+# ==========================================
+# 5. 小鹤双拼方案 (flypy_algebra)
+# ==========================================
+flypy:
+
+    - erase/^xx$/
+    - derive/^([jqxy])u$/$1v/
+    - derive/^([aoe])([ioun])$/$1$1$2/
+    - xform/^([aoe])(ng)?$/$1$1$2/
+    - xform/iu$/Ⓠ/
+    - xform/(.)ei$/$1Ⓦ/
+    - xform/uan$/Ⓡ/
+    - xform/[uv]e$/Ⓣ/
+    - xform/un$/Ⓨ/
+    - xform/^sh/Ⓤ/
+    - xform/^ch/Ⓘ/
+    - xform/^zh/Ⓥ/
+    - xform/uo$/Ⓞ/
+    - xform/ie$/Ⓟ/
+    - xform/(.)i?ong$/$1Ⓢ/
+    - xform/ing$|uai$/Ⓚ/
+    - xform/(.)ai$/$1Ⓓ/
+    - xform/(.)en$/$1Ⓕ/
+    - xform/(.)eng$/$1Ⓖ/
+    - xform/[iu]ang$/Ⓛ/
+    - xform/(.)ang$/$1Ⓗ/
+    - xform/ian$/Ⓜ/
+    - xform/(.)an$/$1Ⓙ/
+    - xform/(.)ou$/$1Ⓩ/
+    - xform/[iu]a$/Ⓧ/
+    - xform/iao$/Ⓝ/
+    - xform/(.)ao$/$1Ⓒ/
+    - xform/ui$/Ⓥ/
+    - xform/in$/Ⓑ/
+    - xlit/ⓆⓌⓇⓉⓎⓊⒾⓄⓅⓈⒹⒻⒼⒽⒿⓀⓁⓏⓍⒸⓋⒷⓃⓂ/qwrtyuiopsdfghjklzxcvbnm/
+    # - abbrev/^(.).+$/$1/  # 首字母简拼，开启后会导致 3 个字母时 kj'x 变成 k'jx 的问题
+
+  # ==========================================
+# 6. 备用飞拼方案 (flypy_legacy)
+# ==========================================
+flypy_legacy:
+
+  - derive/^ng(\d)/eng$1/
+  - xform/^n(\d)/en$1/
+  - xform/^m(\d)/me$1/
+  - derive/^([jqxy])u(\d)$/$1v$2/
+  - derive/^([aoe])([ioun])(\d)$/$1$1$2$3/
+  - xform/^([aoe])(ng)?(\d)$/$1$1$2$3/
+  - xform/iu(\d)$/Ⓠ$1/
+  - xform/(.)ei(\d)$/$1Ⓦ$2/
+  - xform/uan(\d)$/Ⓡ$1/
+  - xform/[uv]e(\d)$/Ⓣ$1/
+  - xform/un(\d)$/Ⓨ$1/
+  - xform/^sh/Ⓤ/
+  - xform/^ch/Ⓘ/
+  - xform/^zh/Ⓥ/
+  - xform/uo(\d)$/Ⓞ$1/
+  - xform/ie(\d)$/Ⓟ$1/
+  - xform/(.)i?ong(\d)$/$1Ⓢ$2/
+  - xform/ing(\d)$/Ⓚ$1/
+  - xform/uai(\d)$/Ⓚ$1/
+  - xform/(.)ai(\d)$/$1Ⓓ$2/
+  - xform/(.)eng(\d)$/$1Ⓖ$2/
+  - xform/(.)en(\d)$/$1Ⓕ$2/
+  - xform/[iu]ang(\d)$/Ⓛ$1/
+  - xform/(.)ang(\d)$/$1Ⓗ$2/
+  - xform/ian(\d)$/Ⓜ$1/
+  - xform/(.)an(\d)$/$1Ⓙ$2/
+  - xform/(.)ou(\d)$/$1Ⓩ$2/
+  - xform/[iu]a(\d)$/Ⓧ$1/
+  - xform/iao(\d)$/Ⓝ$1/
+  - xform/(.)ao(\d)$/$1Ⓒ$2/
+  - xform/ui(\d)$/Ⓥ$1/
+  - xform/in(\d)$/Ⓑ$1/
+  - xlit/ⓆⓌⓇⓉⓎⓊⒾⓄⓅⓈⒹⒻⒼⒽⒿⓀⓁⓏⓍⒸⓋⒷⓃⓂ/qwrtyuiopsdfghjklzxcvbnm/
+  - xform/^(aj|ac|ad|ew|ef|oz)(\d?)$//
+  - derive/^(..)(\d)$/$1/
+  - derive/^(.).+(\d)$/$1$2/
+
+# ==========================================
+# 7. 键道6方案 (jd6_algebra，两键：声母键+韵母键，声调被吸收)
+# 与简拼棱镜的两键大写韵母派生（derive/^(.)(.)$）兼容。
+# ==========================================
+jd6:
+  # 1. 全拼还原
+  - xlit/ê/e/
+  - xform/(^| )r5(?= |$)/$1er5/ # 儿化轻声并入 er5，避免占用单键 r
+  - xform/(?<=[jqxy])u(e?\d?)/v$1/
+  - xform/(^| )([aoe]|[mn]g?\d)/$1X$2/
+
+  # 2. 声母飞键
+  - xform/zh(an|ang|ei|en|eng|u|un)\d?/Q$1/
+  - derive/zh(ai|ao|e)\d?/Q$1/
+  - xform/zh/F/
+  - xform/ch(ai|an|ang|ei|en|eng|u|un)\d?/J$1/
+  - derive/ch(ao|e)\d?/J$1/
+  - xform/ch/W/
+  - xform/sh/E/
+
+  # 3. 韵母
+  - derive/uang\d?/M/
+  - xform/[iu]ang\d?/X/
+  - xform/i?ong\d?/Y/
+  - xform/ang\d?/P/
+  - xform/(ing|uai)\d?/G/
+  - xform/e?ng\d?/R/
+  - xform/(ei|un)\d?/W/
+  - xform/en\d?/N/
+  - xform/[uv]an\d?/T/
+  - xform/ian\d?/M/
+  - xform/an\d?/F/
+  - xform/(iu|ua)\d?/Q/
+  - xform/(ie|ou)\d?/D/
+  - xform/(ai|ve|ue)\d?/H/
+  - xform/iao\d?/C/
+  - xform/ao\d?/Z/
+  - xform/(in|ui)\d?/B/
+  - xform/(u?o|v)\d?/L/
+  - xform/i\d?/K/
+  - xform/i?a\d?/S/
+  - xform/(er|u)\d?/J/
+
+  # 4. 去掉剩余声调，统一转换为小写收尾
+  - xform/\d//
+  - xlit/QWERTYUIOPASDFGHJKLZXCVBNM/qwertyuiopasdfghjklzxcvbnm/

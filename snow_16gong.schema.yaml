@@ -1,0 +1,192 @@
+# Rime schema
+# encoding: utf-8
+
+__include: snow_pinyin.schema.yaml:/
+
+schema:
+  schema_id: snow_16gong
+  name: 冰雪16宫格
+  version: "0.4.1"
+  author:
+    - 吅吅大山
+    - 谭淞宸 <i@tansongchen.com>
+  description: |
+    16宫格 双拼的顶功方案，保留简拼与声声词
+  dependencies:
+    - snow_pinyin
+    - snow_bihua
+    - radical_pinyin
+    - snow_jiandao_bihua
+    - snow_16gong_jianpin
+    - snow_jiandao_chaifen
+
+engine:
+  processors:
+    - lua_processor@*snow.statistics*processor
+    - ascii_composer
+    - lua_processor@*snow.url
+    - lua_processor@*snow.shape_processor
+    - lua_processor@*snow.ss*processor
+    - lua_processor@*snow.select_character
+    - lua_processor@*snow.popping
+    - recognizer
+    - lua_processor@*snow.user_dict
+    - key_binder
+    - speller
+    - punctuator
+    - selector
+    - navigator
+    - express_editor
+  segmentors:
+    - ascii_segmentor
+    - matcher
+    - abc_segmentor
+    - affix_segmentor@stroke
+    - affix_segmentor@pinyin
+    - affix_segmentor@jianpin
+    - punct_segmentor
+    - fallback_segmentor
+  translators:
+    - punct_translator
+    - script_translator
+    - script_translator@jianpin
+    - table_translator@stroke
+    - table_translator@radical
+    - script_translator@pinyin
+    - lua_translator@*snow.buffered
+    - lua_translator@*snow.datetime
+    - lua_translator@*snow.statistics*translator
+    - lua_translator@*snow.number
+    - lua_translator@*snow.unicode*translator
+    - lua_translator@*snow.calculator
+    - history_translator
+  filters:
+    - lua_filter@*snow.placeholder
+    - lua_filter@*snow.bihua
+    - lua_filter@*snow.enforce
+    - reverse_lookup_filter@lookup_pinyin
+    - reverse_lookup_filter@lookup_16gong
+    - lua_filter@*snow.fix
+    - lua_filter@*snow.shape_filter
+    - lua_filter@*snow.postpone
+    - uniquifier
+    - simplifier
+    - lua_filter@*snow.unicode*filter
+    - lua_filter@*snow.ss*filter
+
+speller:
+  alphabet: bcdfghklnpqrsxyzBCDFGHKLNPQRSXYZ
+  initials: bcdfghklnpqrsxyz
+  delimiter: " "
+  shape:
+    # 整句模式下辅助码键参与筛选
+    - match: "^[bcdfghklnpqrsxyz]*$"
+      accept: "[avuio]"
+  popping:
+    # 三字词补韵母：仅限 7 种形态，形态本身不含顶屏字母。
+    # 形态后再输入一个小写声母即顶屏，accept 接这个小写声母。
+    # 必须放在最前，避免被「单字和三字词」等宽规则抢先匹配。
+    - when: popping
+      match: "[bcdfghklnpqrsxyz][BCDFGHKLNPQRSXYZ][bcdfghklnpqrsxyz]{2}"
+      accept: "[bcdfghklnpqrsxyz]"
+    - when: popping
+      match: "[bcdfghklnpqrsxyz]{2}[BCDFGHKLNPQRSXYZ][bcdfghklnpqrsxyz]"
+      accept: "[bcdfghklnpqrsxyz]"
+    - when: popping
+      match: "[bcdfghklnpqrsxyz]{3}[BCDFGHKLNPQRSXYZ]"
+      accept: "[bcdfghklnpqrsxyz]"
+    - when: popping
+      match: "[bcdfghklnpqrsxyz][BCDFGHKLNPQRSXYZ][bcdfghklnpqrsxyz][BCDFGHKLNPQRSXYZ][bcdfghklnpqrsxyz]"
+      accept: "[bcdfghklnpqrsxyz]"
+    - when: popping
+      match: "[bcdfghklnpqrsxyz][BCDFGHKLNPQRSXYZ][bcdfghklnpqrsxyz]{2}[BCDFGHKLNPQRSXYZ]"
+      accept: "[bcdfghklnpqrsxyz]"
+    - when: popping
+      match: "[bcdfghklnpqrsxyz]{2}[BCDFGHKLNPQRSXYZ][bcdfghklnpqrsxyz][BCDFGHKLNPQRSXYZ]"
+      accept: "[bcdfghklnpqrsxyz]"
+    - when: popping
+      match: "[bcdfghklnpqrsxyz][BCDFGHKLNPQRSXYZ][bcdfghklnpqrsxyz][BCDFGHKLNPQRSXYZ][bcdfghklnpqrsxyz][BCDFGHKLNPQRSXYZ]"
+      accept: "[bcdfghklnpqrsxyz]"
+    # 单字和三字词
+    - when: popping
+      match: "(?:[bcdfghklnpqrsxyz][BCDFGHKLNPQRSXYZ]?){2,3}[BCDFGHKLNPQRSXYZ]*"
+      accept: "[bcdfghklnpqrsxyz]"
+    # 四字词和多字词
+    - when: popping
+      match: "(?:[bcdfghklnpqrsxyz][BCDFGHKLNPQRSXYZ]?){4,}[BCDFGHKLNPQRSXYZ]*"
+      accept: "[bcdfghklnpqrsxyz]"
+    # 已有至少四个声母时，大写转成小写追加下一个字的声母；韵母和形码不计数
+    - when: popping
+      match: "(?:[bcdfghklnpqrsxyz][BCDFGHKLNPQRSXYZ]?){4,}[BCDFGHKLNPQRSXYZ]*"
+      accept: "[BCDFGHKLNPQRSXYZ]"
+      strategy: append
+    # 不足四个声母时，大写原样追加为前一个字的韵母
+    - when: popping
+      match: "(?:[bcdfghklnpqrsxyz][BCDFGHKLNPQRSXYZ]?){0,2}[bcdfghklnpqrsxyz]"
+      accept: "[BCDFGHKLNPQRSXYZ]"
+      strategy: append_raw
+    # 顶标点
+    - match: ".*[^a-zA-Z0-9]"
+      accept: "[bcdfghklnpqrsxyz]"
+    # 标点大写顶
+    - match: ".*[a-z0-9]"
+      accept: "[^a-z0-9 ]"
+  algebra:
+    __include: snow_algebra.yaml:/16gong
+
+jianpin:
+  tag: jianpin
+  dictionary: rime_frost
+  prism: snow_16gong_jianpin
+
+lookup_16gong:
+  tags: [pinyin]
+  overwrite_comment: true
+  dictionary: rime_frost
+  comment_format:
+    __include: snow_algebra.yaml:/16gong
+
+__patch:
+  - patch
+  - snow_16gong.custom:/patch?
+
+patch:
+  switches:
+    __include: snow_pinyin.schema.yaml:/switches
+    __append:
+      - name: popping
+        states: [整句, 顶功]
+        reset: 1
+      - name: chaifen
+        states: [默认, 拆分]
+        reset: 0
+      - name: buffered
+        states: [结束, 缓冲]
+        reset: 0
+      - name: unicode
+        states: [隐藏, 注解]
+        reset: 0
+      - name: add
+        states: [结束, 加词]
+        reset: 0
+      - name: ss
+        states: [关闭, 开启]
+        reset: 1
+  key_binder:
+    bindings:
+      __include: snow_pinyin.schema.yaml:/key_binder/bindings
+      __append:
+        - { when: always, accept: "Control+j", toggle: buffered }
+        - { when: always, accept: "Control+u", toggle: unicode }
+        - { when: always, accept: "Control+t", toggle: chaifen }
+        - { when: always, accept: "Control+Shift+s", toggle: ss }
+  translator/prism: snow_16gong
+  translator/preedit_format: null
+  translator/enable_schema_user_dict: true
+  translator/shape_elements: snow_jiandao_chaifen
+  translator/shape_mapping: "radical_jiandao.txt"
+  menu/alternative_select_keys: null
+  recognizer/patterns/jianpin: "^(?:[bcdfghklnpqrsxyz][BCDFGHKLNPQRSXYZ]?){3,}$"
+  recognizer/patterns/url: "^(www[.]|https?:|ftp[.:]|mailto:|file:).*$"
+  stroke/prism: snow_jiandao_bihua
+  stroke/preedit_format: [xlit/viuoa/一丨丿丶乙/]

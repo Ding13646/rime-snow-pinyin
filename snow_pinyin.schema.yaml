@@ -79,11 +79,11 @@ simplifier:
 
 recognizer:
   patterns:
-    punct: '^/([0-9]0?|[A-Za-z]+)$'
-    pinyin: "^A[a-z]*'?$"
-    stroke: "^U[a-z]*'?$"
-    lua: "^O.*$"
-    history: "^I$"
+    punct: '^i([0-9]0?|[A-Za-z]+)$'
+    pinyin: "^a[a-z]*'?$"
+    stroke: "^u[a-z]*'?$"
+    lua: "^o.*$"
+    history: "^i$"
 
 stroke:
   tag: stroke
@@ -92,7 +92,7 @@ stroke:
   enable_user_dict: false
   enable_sentence: false
   enable_completion: true
-  prefix: "U"
+  prefix: "u"
   suffix: "'"
   tips: 〔笔画·部件〕
   preedit_format:
@@ -109,7 +109,7 @@ radical:
   enable_user_dict: false
   enable_sentence: false
   enable_completion: true
-  prefix: "U"
+  prefix: "u"
   suffix: "'"
   comment_format:
     - erase/^.*$//
@@ -119,18 +119,15 @@ pinyin:
   dictionary: rime_frost
   enable_user_dict: false
   enable_sentence: false
-  prefix: "A"
+  prefix: "a"
   suffix: "'"
   tips: 〔拼音〕
 
 history:
   tag: history
-  input: "I"
+  input: "i"
   size: 5
   initial_quality: -1
-
-lua:
-  input: "O"
 
 lookup_pinyin:
   tags: [stroke]

@@ -30,7 +30,7 @@ patch:
 
 首次部署需等待大词库编译完成。
 
-各方案用大写字母引导反查：`U` 引导笔画反查，`A` 引导拼音反查，例如输入 `Uwangyan` 查「琰」，候选旁显示带调拼音；`/` 引导符号，`O` 引导数字、计算、日期与统计命令，`I` 重复上屏。部件词库来自 [rime-radical-pinyin](https://github.com/mirtlecn/rime-radical-pinyin)，发布包已包含所需文件。
+反查与命令用「小写 + 大写」组合激发（定义在各方案）：`aA` 拼音反查、`uU` 笔画与部件反查（如 `uUwangyan` 查「琰」，候选旁显示带调拼音）、`oO` 数字、计算、日期与统计命令、`iI` 重复上屏，`/` 符号；单按小写键保持原行为（如单 `u` 出笔画候选、单 `a` 出拼音候选），为声声词 1-4 码留出空间。部件词库来自 [rime-radical-pinyin](https://github.com/mirtlecn/rime-radical-pinyin)，发布包已包含所需文件。
 
 ## 手机皮肤
 

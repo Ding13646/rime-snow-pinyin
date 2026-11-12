@@ -58,7 +58,7 @@ engine:
     - lua_translator@*snow.number
     - lua_translator@*snow.unicode*translator
     - lua_translator@*snow.calculator
-    - history_translator
+    - history_translator@history
   filters:
     - lua_filter@*snow.placeholder
     - lua_filter@*snow.bihua
@@ -229,6 +229,16 @@ patch:
         - { when: always, accept: "Control+t", toggle: chaifen }
         - { when: always, accept: "Control+Shift+s", toggle: ss }
   menu/alternative_select_keys: null
+  recognizer/patterns/punct: '^/([0-9]0?|[A-Za-z]+)$'
+  recognizer/patterns/pinyin: '^aA?[a-z]*''?$'
+  recognizer/patterns/stroke: '^uU?[a-z]*''?$'
+  recognizer/patterns/lua: '^oO?.*$'
+  recognizer/patterns/history: '^iI?$'
+  stroke/prefix: uU
+  radical/prefix: uU
+  pinyin/prefix: aA
+  history/input: iI
+  lua/input: oO
   recognizer/patterns/jianpin: "^(?:[bpmfdtnlgkhjqxzcsrywe][BPMFDTNLGKHJQXZCSRYWE]?){3,}$"
   recognizer/patterns/url: "^(www[.]|https?:|ftp[.:]|mailto:|file:).*$"
   stroke/prism: snow_jiandao_bihua

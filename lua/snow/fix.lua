@@ -49,17 +49,30 @@ end
 
 ---@param env FixEnv
 ---@param input string
+---@return string[]|nil
+local function dict_lookup(env, input)
+  local hit = env.dict[input]
+  -- 固定词允许 avuio 起码：这些小写键是反查/命令引导，打大写首键进入正常编码段
+  if not hit and input:match("^%u%l+$") then
+    hit = env.dict[input:sub(1, 1):lower() .. input:sub(2)]
+  end
+  return hit
+end
+
+---@param env FixEnv
+---@param input string
 function filter.get_customized_list(env, input)
   ---@type string[]
   local fixed_phrases = {}
-  if env.dict[input] then
-    for _, phrase in ipairs(env.dict[input]) do
+  local customized = dict_lookup(env, input)
+  if customized then
+    for _, phrase in ipairs(customized) do
       table.insert(fixed_phrases, phrase)
     end
   end
   if not env.user_dict then
     -- 没有用户词库时直接复用配置表，避免每键复制
-    return env.dict[input] or fixed_phrases
+    return customized or fixed_phrases
   end
   local max_index = 0
   local da = env.user_dict:query(input .. snow.separator)

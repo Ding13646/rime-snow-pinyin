@@ -3,6 +3,7 @@
 
 ---@class BufferedEnv: Env
 ---@field selected boolean
+---@field prompt string
 ---@field prepare_connection Connection
 ---@field select_connection Connection
 
@@ -11,6 +12,7 @@ local translator = {}
 ---@param env BufferedEnv
 function translator.init(env)
   env.selected = false
+  env.prompt = env.engine.schema.config:get_string("lua/input") or "o"
   local context = env.engine.context
   -- 先于引擎的 OnSelect 禁用自动上屏；此时不能清空 composition，OnSelect 还要访问当前段。
   env.prepare_connection = context.select_notifier:connect(function(ctx)
@@ -35,7 +37,7 @@ end
 ---@param segment Segment
 ---@param env BufferedEnv
 function translator.func(input, segment, env)
-  if input == "O" and segment.start == 0 and env.engine.context.input == "O" then
+  if input == env.prompt and segment.start == 0 and env.engine.context.input == env.prompt then
     local text = env.engine.context:get_option("buffered") and "📝 关闭缓冲" or "📝 开启缓冲"
     yield(Candidate("buffered", segment.start, segment._end, text, ""))
   end

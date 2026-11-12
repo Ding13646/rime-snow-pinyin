@@ -115,7 +115,9 @@ local function active_word(env)
 		return nil
 	end
 	local segment = context.composition:toSegmentation():back()
-	if not segment or not segment:has_tag("abc") then
+	-- 反查/命令引导段（小鹤声声词码与小写引导组合共存）同样放行
+	if not segment or not (segment:has_tag("abc") or segment:has_tag("pinyin")
+			or segment:has_tag("stroke") or segment:has_tag("lua")) then
 		return nil
 	end
 	return env.words[input]

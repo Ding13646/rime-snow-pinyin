@@ -17,7 +17,7 @@ const sentence = "剥削输入法负面新闻。";
 
 export const LATENCY_CASES: Record<string, LatencyCase[]> = {
 	snow_jiandao: [
-		{ id: "radical", keys: "Uwangyan", page: "琰", source: "README.md" },
+		{ id: "radical", keys: "uwangyan", page: "琰", source: "README.md" },
 		{
 			id: "dense-prefix",
 			keys: "mdd",

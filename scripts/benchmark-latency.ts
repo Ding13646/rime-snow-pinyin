@@ -67,6 +67,17 @@ function copyRimeSource(source: string, dest: string) {
 		if (/^snow_.*\.(yaml|txt)$/.test(name) && !name.endsWith(".custom.yaml"))
 			clone(join(source, name), join(dest, name));
 	}
+	for (const name of ["grammar.yaml", "rime_frost.dict.yaml"]) {
+		if (existsSync(join(source, name)))
+			clone(join(source, name), join(dest, name));
+	}
+	if (existsSync(join(source, "frost_dicts")))
+		clone(join(source, "frost_dicts"), join(dest, "frost_dicts"));
+	const reverseBin = join(source, "build", "kMandarin17.reverse.bin");
+	if (existsSync(reverseBin)) {
+		mkdirSync(join(dest, "build"), { recursive: true });
+		clone(reverseBin, join(dest, "build", "kMandarin17.reverse.bin"));
+	}
 	clone(join(source, "lua"), join(dest, "lua"));
 	clone(join(source, "default.yaml"), join(dest, "default.yaml"));
 	// 键道依赖部件词库，部署环境需要一并复制。

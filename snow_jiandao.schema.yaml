@@ -181,15 +181,15 @@ patch:
         - { when: always, accept: "Control+Shift+s", toggle: ss }
   menu/alternative_select_keys: null
   recognizer/patterns/punct: '^/([0-9]0?|[A-Za-z]+)$'
-  recognizer/patterns/pinyin: '^aA[a-z]*''?$'
-  recognizer/patterns/stroke: '^uU[a-z]*''?$'
-  recognizer/patterns/lua: '^oO.*$'
-  recognizer/patterns/history: '^iI$'
-  stroke/prefix: uU
-  radical/prefix: uU
-  pinyin/prefix: aA
-  history/input: iI
-  lua/input: oO
+  recognizer/patterns/pinyin: "^a[a-z]*'?$"
+  recognizer/patterns/stroke: "^u[a-z]*'?$"
+  recognizer/patterns/lua: "^o.*$"
+  recognizer/patterns/history: "^i$"
+  stroke/prefix: u
+  radical/prefix: u
+  pinyin/prefix: a
+  history/input: i
+  lua/input: o
   recognizer/patterns/jianpin: "^(?:[bpmfdtnlgkhjqxzcsrywe][BPMFDTNLGKHJQXZCSRYWE]?){3,}$"
   recognizer/patterns/url: "^(www[.]|https?:|ftp[.:]|mailto:|file:).*$"
   stroke/prism: snow_jiandao_bihua

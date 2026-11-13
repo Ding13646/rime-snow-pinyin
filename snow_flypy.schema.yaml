@@ -93,7 +93,15 @@ lookup_flypy:
   overwrite_comment: true
   dictionary: rime_frost
   comment_format:
-    __include: snow_algebra.yaml:/flypy
+    __include: snow_algebra.yaml:/reverse
+
+# 笔画·部件反查候选注音：kMandarin 带调全拼转小鹤码
+lookup_pinyin:
+  tags: [stroke]
+  overwrite_comment: true
+  dictionary: kMandarin17
+  comment_format:
+    __include: snow_algebra.yaml:/reverse
 
 __patch:
   - patch

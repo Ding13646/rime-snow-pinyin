@@ -391,3 +391,61 @@ jd6:
   # 4. 去掉剩余声调，统一转换为小写收尾
   - xform/\d//
   - xlit/QWERTYUIOPASDFGHJKLZXCVBNM/qwertyuiopasdfghjklzxcvbnm/
+
+# ==========================================
+# 8. 反查（reverse）：部件读音码 → 格道17码，供 radical_pinyin 反查棱镜
+#    与反查候选注音（lookup comment_format）共用；头部一条处理部件码分隔符
+# ==========================================
+reverse:
+  - xform/'//
+  - xlit/āáǎàōóǒòēéěèīíǐìūúǔùǖǘǚǜü/aaaaooooeeeeiiiiuuuuvvvvv/
+  - xform/^ng$/eng/
+  - xform/ńg|ňg|ǹg/eng/
+  - xform/ń|ň|ǹ/en/
+  - xform/ḿ/me/
+  - erase/^xx$/
+  - derive/^([jqxy])u$/$1V/
+  - xform/^k/P/
+  - xform/^r/T/
+  - xform/^h/N/
+  - xform/^([aoe].*)$/Q$1/
+  - xform/^ch/C/
+  - xform/^c/M/
+  - xform/^zh/Z/
+  - xform/^z/F/
+  - xform/^sh/S/
+  - xform/^s/W/
+  - xform/uang\d?/Q/
+  - xform/iang\d?/Z/
+  - xform/iong\d?/B/
+  - xform/ang\d?/F/
+  - xform/eng\d?/S/
+  - xform/ian\d?/Q/
+  - xform/iao\d?/X/
+  - xform/ing\d?/Y/
+  - xform/ong\d?/T/
+  - xform/uai\d?/P/
+  - xform/uan\d?/M/
+  - xform/ai\d?/L/
+  - xform/an\d?/W/
+  - xform/ao\d?/B/
+  - xform/ei\d?/P/
+  - xform/en\d?/Z/
+  - xform/er\d?/F/
+  - xform/ua\d?/F/
+  - xform/ie\d?/S/
+  - xform/in\d?/G/
+  - xform/iu\d?/T/
+  - xform/ou\d?/X/
+  - xform/ia\d?/C/
+  - xform/[uv]e\d?/L/
+  - xform/ui\d?/G/
+  - xform/un\d?/P/
+  - xform/uo\d?/Y/
+  - xform/a\d?/C/
+  - xform/e\d?/N/
+  - xform/i\d?/J/
+  - xform/o\d?/M/
+  - xform/u\d?/D/
+  - xform/v\d?/M/
+  - xlit/QWERTYUIOPASDFGHJKLZXCVBNM/qwertyuiopasdfghjklzxcvbnm/

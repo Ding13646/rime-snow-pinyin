@@ -75,7 +75,7 @@ engine:
     - lua_filter@*snow.ss*filter
 
 speller:
-  alphabet: bcdfghklnpqrsxyzaiouBCDFGHKLNPQRSXYZ
+  alphabet: bcdfghklnpqrsxyzaiouAIOUBCDFGHKLNPQRSXYZ
   initials: bcdfghklnpqrsxyz
   delimiter: " "
   shape:
@@ -130,7 +130,7 @@ speller:
       accept: "[bcdfghklnpqrsxyz]"
     # 标点大写顶
     - match: ".*[a-z0-9]"
-      accept: "[^a-z0-9 ]"
+      accept: "[^a-z0-9AIOU ]"
   algebra:
     __include: snow_algebra.yaml:/16gong
 

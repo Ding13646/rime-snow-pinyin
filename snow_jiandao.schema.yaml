@@ -75,7 +75,7 @@ engine:
     - lua_filter@*snow.ss*filter
 
 speller:
-  alphabet: bpmfdtnlgkhjqxzcsrwyeaiouBPMFDTNLGKHJQXZCSRWYE
+  alphabet: bpmfdtnlgkhjqxzcsrwyeaiouAIOUBPMFDTNLGKHJQXZCSRWYE
   initials: bpmfdtnlgkhjqxzcsrwye
   delimiter: " "
   shape:
@@ -159,9 +159,9 @@ speller:
     # 顶标点
     - match: ".*[^a-zA-Z0-9]"
       accept: "[bpmfdtnlgkhjqxzcsrywe]"
-    # 标点大写顶
+    # 标点大写顶（AIOU 大写让给引导组合）
     - match: ".*[a-z0-9]"
-      accept: "[^a-z0-9 ]"
+      accept: "[^a-z0-9AIOU ]"
   algebra:
     __include: snow_algebra.yaml:/flypy21
     __append:

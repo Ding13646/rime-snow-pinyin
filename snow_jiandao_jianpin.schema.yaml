@@ -43,7 +43,7 @@ speller:
   alphabet: bpmfdtnlgkhjqxzcsrwye
   delimiter: " '"
   algebra:
-    __include: snow_algebra.yaml:/flypy21
+    __include: snow_algebra.yaml:/16gong
     __append:
       # 英数字母的伪音节（`~x` / `~~x`）也要缩得出声母，否则英数混输造出来的词
       # 在声母编码下查不到。键道的字母音节码是 `<声>e` / `x<韵>`，改动字母规则时

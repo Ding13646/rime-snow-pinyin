@@ -9,7 +9,7 @@ export const SYLLABLE_PATTERNS = [
 		name: "冰雪键道",
 		key: "speller/algebra",
 		// snow-jiandao/index.md：声韵两码，无调码。
-		pattern: /^[bpmfdtnlgkhjqxzcsrywe]{2}$/,
+		pattern: /^[bcdfghjlmnpqstwxyz]{2}$/,
 	},
 ];
 

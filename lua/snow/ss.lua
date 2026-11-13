@@ -16,7 +16,7 @@ local ss = {}
 
 ---@type table<string, SsSchema>
 local SCHEMAS = {
-	snow_jiandao = { file = "snow_jiandao_ss.txt", initials = "bpmfdtnlgkhjqxzcsrywe", require_popping = true },
+	snow_jiandao = { file = "snow_jiandao_ss.txt", initials = "bcdfghjlmnpqstwxyz", require_popping = true },
 	snow_flypy = { file = "snow_flypy_ss.txt", initials = "abcdefghijklmnopqrstuvwxyz", require_popping = false },
 	snow_lx17 = { file = "snow_lx17_ss.txt", initials = "bcdfghjlmnpqstwxyz", require_popping = true },
 	snow_gd17 = { file = "snow_gd17_ss.txt", initials = "bcdfghjlmnpqstwxyz", require_popping = true },

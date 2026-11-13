@@ -199,9 +199,8 @@ function ss.filter.func(translation, env)
 	local first = true
 	for candidate in translation:iter() do
 		if word and first then
-			if candidate.text ~= word then
-				snow.comment(candidate, word .. "'")
-			end
+			-- 不管首选是否就是声声词，都显示提示
+			snow.comment(candidate, word .. "'")
 			first = false
 		end
 		yield(candidate)

@@ -75,7 +75,7 @@ engine:
     - lua_filter@*snow.ss*filter
 
 speller:
-  alphabet: bpmfdtnlgkhjqxzcsrwyeaiouAIOUBPMFDTNLGKHJQXZCSRWYE
+  alphabet: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ
   initials: bpmfdtnlgkhjqxzcsrwye
   delimiter: " "
   shape:
@@ -89,81 +89,32 @@ speller:
     - match: "[bpmfdtnlgkhjqxzcsrywe][viuoa]*"
       accept: "[viuoa]"
   popping:
-    # 三字词补韵母：仅限 7 种形态，形态本身不含顶屏字母。
-    # 形态后再输入一个小写声母即顶屏，accept 接这个小写声母。
-    # 必须放在最前，避免被“单字和三字词”等宽规则抢先匹配。
-
-    # aAaa + 小写声母，顶屏（已修正 match 长度并去掉 append）
+    # 单字、二字词、三字词（flypy 双拼无声调）
     - when: popping
-      match: "[bpmfdtnlgkhjqxzcsrywe][BPMFDTNLGKHJQXZCSRYWE][bpmfdtnlgkhjqxzcsrywe]{2}"
-      accept: "[bpmfdtnlgkhjqxzcsrywe]"
-
-    # aaAa + 小写声母，顶屏
-    - when: popping
-      match: "[bpmfdtnlgkhjqxzcsrywe]{2}[BPMFDTNLGKHJQXZCSRYWE][bpmfdtnlgkhjqxzcsrywe]"
-      accept: "[bpmfdtnlgkhjqxzcsrywe]"
-
-    # aaaA + 小写声母，顶屏
-    - when: popping
-      match: "[bpmfdtnlgkhjqxzcsrywe]{3}[BPMFDTNLGKHJQXZCSRYWE]"
-      accept: "[bpmfdtnlgkhjqxzcsrywe]"
-
-    # aAaAa + 小写声母，顶屏
-    - when: popping
-      match: "[bpmfdtnlgkhjqxzcsrywe][BPMFDTNLGKHJQXZCSRYWE][bpmfdtnlgkhjqxzcsrywe][BPMFDTNLGKHJQXZCSRYWE][bpmfdtnlgkhjqxzcsrywe]"
-      accept: "[bpmfdtnlgkhjqxzcsrywe]"
-
-    # aAaaA + 小写声母，顶屏
-    - when: popping
-      match: "[bpmfdtnlgkhjqxzcsrywe][BPMFDTNLGKHJQXZCSRYWE][bpmfdtnlgkhjqxzcsrywe]{2}[BPMFDTNLGKHJQXZCSRYWE]"
-      accept: "[bpmfdtnlgkhjqxzcsrywe]"
-
-    # aaAaA + 小写声母，顶屏
-    - when: popping
-      match: "[bpmfdtnlgkhjqxzcsrywe]{2}[BPMFDTNLGKHJQXZCSRYWE][bpmfdtnlgkhjqxzcsrywe][BPMFDTNLGKHJQXZCSRYWE]"
-      accept: "[bpmfdtnlgkhjqxzcsrywe]"
-
-    # aAaAaA + 小写声母，顶屏
-    - when: popping
-      match: "[bpmfdtnlgkhjqxzcsrywe][BPMFDTNLGKHJQXZCSRYWE][bpmfdtnlgkhjqxzcsrywe][BPMFDTNLGKHJQXZCSRYWE][bpmfdtnlgkhjqxzcsrywe][BPMFDTNLGKHJQXZCSRYWE]"
-      accept: "[bpmfdtnlgkhjqxzcsrywe]"
-
-    # 四顶模式
-    # 630
-    - when: popping
-      match: "[bpmfdtnlgkhjqxzcsrywe][viuoa]+"
-      accept: "[bpmfdtnlgkhjqxzcsrywe]"
-    # 单字和三字词
-    - when: popping
-      match: "(?:[bpmfdtnlgkhjqxzcsrywe][BPMFDTNLGKHJQXZCSRYWE]?){2,3}[viuoa]+"
-      accept: "[bpmfdtnlgkhjqxzcsrywe]"
+      match: "(?:[a-z][A-Z]?){1,3}[A-Z]*"
+      accept: "[a-z]"
     # 四字词和多字词
     - when: popping
-      match: "(?:[bpmfdtnlgkhjqxzcsrywe][BPMFDTNLGKHJQXZCSRYWE]?){4,}[viuoa]*"
-      accept: "[bpmfdtnlgkhjqxzcsrywe]"
-    # 三字词已加形后，仍可补末字韵母；须先于长词声母规则判断
+      match: "(?:[a-z][A-Z]?){4,}[A-Z]*"
+      accept: "[a-z]"
+    # 已有至少四个声母时，大写转成小写追加下一个字的声母
     - when: popping
-      match: "(?:[bpmfdtnlgkhjqxzcsrywe][BPMFDTNLGKHJQXZCSRYWE]?){2}[bpmfdtnlgkhjqxzcsrywe][viuoa]+"
-      accept: "[BPMFDTNLGKHJQXZCSRYWE]"
-      strategy: append_raw
-    # 已有至少四个声母时，大写转成小写追加下一个字的声母；韵母和形码不计数
-    - when: popping
-      match: "(?:[bpmfdtnlgkhjqxzcsrywe][BPMFDTNLGKHJQXZCSRYWE]?){4,}[viuoa]*"
-      accept: "[BPMFDTNLGKHJQXZCSRYWE]"
+      match: "(?:[a-z][A-Z]?){4,}[A-Z]*"
+      accept: "[A-Z]"
       strategy: append
     # 不足四个声母时，大写原样追加为前一个字的韵母
     - when: popping
-      match: "(?:[bpmfdtnlgkhjqxzcsrywe][BPMFDTNLGKHJQXZCSRYWE]?){0,2}[bpmfdtnlgkhjqxzcsrywe]"
-      accept: "[BPMFDTNLGKHJQXZCSRYWE]"
+      match: "(?:[a-z][A-Z]?){0,2}[a-z]"
+      accept: "[A-Z]"
       strategy: append_raw
     # 顶标点
     - match: ".*[^a-zA-Z0-9]"
-      accept: "[bpmfdtnlgkhjqxzcsrywe]"
-    # 标点大写顶（AIOU 大写让给引导组合）
+      accept: "[a-z]"
+    # 标点大写顶
     - match: ".*[a-z0-9]"
-      accept: "[^a-z0-9AIOU ]"
+      accept: "[^a-zA-Z0-9 ]"
   algebra:
-    __include: snow_algebra.yaml:/flypy21
+    __include: snow_algebra.yaml:/flypy
     __append:
       # 英数字母的音节码；改动时 snow_jiandao_jianpin 的 algebra 要跟着改
       - xform/~{1,2}([bpmfdtnlgkhjqxzcsrywe])/$1e/
@@ -184,7 +135,7 @@ lookup_jiandao:
   overwrite_comment: true
   dictionary: rime_frost
   comment_format:
-    __include: snow_algebra.yaml:/flypy21
+    __include: snow_algebra.yaml:/flypy
     __append:
       - xform/q([zhe])/f$1/
       - xform/[viuoa]( |$)/$1/ # 无声调

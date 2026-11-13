@@ -109,7 +109,7 @@ speller:
       accept: "[bcdfghklnpqrsxyz]"
     # 单字和三字词
     - when: popping
-      match: "(?:[bcdfghklnpqrsxyz][BCDFGHKLNPQRSXYZ]?){2,3}[BCDFGHKLNPQRSXYZ]*"
+      match: "(?:[bcdfghklnpqrsxyz][BCDFGHKLNPQRSXYZ]?){2,3}[BCDFGHKLNPQRSXYZ]+"
       accept: "[bcdfghklnpqrsxyz]"
     # 四字词和多字词
     - when: popping

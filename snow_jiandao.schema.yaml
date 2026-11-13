@@ -184,48 +184,18 @@ lookup_jiandao:
   overwrite_comment: true
   dictionary: rime_frost
   comment_format:
-    - "xlit/āáǎàōóǒòēéěèīíǐìūúǔùǖǘǚǜü/aaaaooooeeeeiiiiuuuuvvvvv/"
-    - "xform/(?<=[jqxy])u(e?\d?)/v$1/"
-    - "xform/(^| )([aoe]|[mn]g?\d)/$1C$2/"
-    - "xform/zh/W/"
-    - "xform/sh/E/"
-    - "xform/ch/F/"
-    - "xform/iang\d?/F/"
-    - "xform/uang\d?/M/"
-    - "xform/i?ong\d?/S/"
-    - "xform/iao\d?/N/"
-    - "xform/uai\d?/P/"
-    - "xform/(uan|van)\d?/T/"
-    - "xform/ing\d?/L/"
-    - "xform/eng\d?/G/"
-    - "xform/ang\d?/H/"
-    - "xform/ian\d?/M/"
-    - "xform/(ve|ue)\d?/R/"
-    - "xform/(un|vn)\d?/Y/"
-    - "xform/ie\d?/P/"
-    - "xform/ai\d?/D/"
-    - "xform/en\d?/F/"
-    - "xform/an\d?/R/"
-    - "xform/iu\d?/Q/"
-    - "xform/ei\d?/W/"
-    - "xform/[iu]a\d?/X/"
-    - "xform/ou\d?/Z/"
-    - "xform/ao\d?/C/"
-    - "xform/(in|ui)\d?/B/"
-    - "xform/uo\d?/L/"
-    - "xform/er\d?/M/"
-    - "xform/e\d?/E/"
-    - "xform/a\d?/X/"
-    - "xform/o\d?/L/"
-    - "xform/(u|v)\d?/J/"
-    - "xform/i\d?/K/"
-    - "xlit/QWERTYUIOPASDFGHJKLZXCVBNM/qwertyuiopasdfghjklzxcvbnm/"
-    - "xlit/12345/viuoa/"
-    - "xform/[viuoa]$//"
-    __include: snow_algebra.yaml:/flypy21
+    __include: snow_algebra.yaml:/reverse
     __append:
       - xform/q([zhe])/f$1/
       - xform/[viuoa]( |$)/$1/ # 无声调
+
+# 笔画·部件反查候选注音：kMandarin 带调全拼转键道码
+lookup_pinyin:
+  tags: [stroke]
+  overwrite_comment: true
+  dictionary: kMandarin17
+  comment_format:
+    __include: snow_algebra.yaml:/reverse
 
 __patch:
   - patch

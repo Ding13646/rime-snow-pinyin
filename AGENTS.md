@@ -14,7 +14,7 @@ Markdown 每个段落、列表项各写一行，不按行宽硬换行；只在�
 
 反查与命令引导用「小写 + 大写」组合激发，定义下放到各方案 patch（基座保留上游默认 `i`/`a`/`u`/`o`/`i`）：`aA` 拼音反查、`uU` 笔画与部件反查、`oO` lua 命令（缓冲、数字、计算、日期、统计，`lua/input` 为 `oO`）、`iI` 重复上屏，符号 `/`；单按小写键保持原行为（单 `u` 出笔画候选），为声声词 1-4 码留出空间。affix prefix 为两字符（如 `aA`），lua 翻译器的 prompt 从 `lua/input` 读取两字符组合；`ss` 的段检查放行 `abc` 与 `pinyin`/`stroke`/`lua` 引导段（小鹤声声词码与引导组合共存）。
 
-`radical_pinyin.schema.yaml`、`radical_pinyin.dict.yaml` 由子模块提供：本机软链指向原文件，发布、测试和 iCloud 同步时复制到方案目录根目录。不要手改或提交根目录副本。
+`radical_pinyin.schema.yaml`、`radical_pinyin.dict.yaml` 已入库跟踪：schema 含反查拼写运算桥（`algebra_snow` 引用 `snow_algebra.yaml:/reverse`），是反查棱镜的编译源；更新子模块后把词典复制到根目录提交，不要手改子模块内文件。
 
 ```sh
 bun scripts/link.ts link      # 幂等建立软链；新增文件后重跑，冲突确认后加 --force

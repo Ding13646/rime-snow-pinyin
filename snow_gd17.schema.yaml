@@ -144,15 +144,8 @@ lookup_gd17:
   overwrite_comment: true
   dictionary: rime_frost
   comment_format:
-    __include: snow_algebra.yaml:/reverse
+    __include: snow_algebra.yaml:/gd17
 
-# 笔画·部件反查候选注音：kMandarin 带调全拼转格道17码
-lookup_pinyin:
-  tags: [stroke]
-  overwrite_comment: true
-  dictionary: kMandarin17
-  comment_format:
-    __include: snow_algebra.yaml:/reverse
 
 __patch:
   - patch

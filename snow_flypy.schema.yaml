@@ -148,7 +148,7 @@ patch:
   pinyin/prefix: aA
   history/input: iI
   lua/input: oO
-  recognizer/patterns/jianpin: "^(?:[a-z][A-Z]?){3,}$"
+  recognizer/patterns/jianpin: "^(?!uU|iI|oO|aA)(?:[a-z][A-Z]?){3,}$"
   recognizer/patterns/url: "^(www[.]|https?:|ftp[.:]|mailto:|file:).*$"
   stroke/prism: snow_jiandao_bihua
   stroke/preedit_format: [xlit/viuoa/一丨丿丶乙/]

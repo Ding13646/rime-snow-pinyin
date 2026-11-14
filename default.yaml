@@ -1,9 +1,5 @@
 schema_list:
-  - schema: snow_jiandao
-  - schema: snow_flypy
-  - schema: snow_lx17
   - schema: snow_gd17
-  - schema: snow_16gong
 
 ascii_composer:
   good_old_caps_lock: true

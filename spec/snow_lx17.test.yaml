@@ -1,0 +1,204 @@
+# 分类及顺序与snow_jiandao.test.yaml一致；每方案使用自己的编码和词表。
+# schema_userdb会写用户数据库，请使用隔离测试用户目录；需先部署。
+# encoding检查缓冲提交链路；造词学习效果需Rime运行环境验证。
+# source_dir沿用键道测试；目前仅完成静态核验，未声称动态通过。
+schema: snow_lx17
+source_dir: ..
+script: |
+  -- 候选在整个候选列表中的位置，不存在时返回 math.huge
+  function rank(something)
+    for i, v in ipairs(cand) do
+      if v.text == something then
+        return i
+      end
+    end
+    return math.huge
+  end
+  function has(something)
+    return rank(something) < math.huge
+  end
+  -- 是否出现在首页（page_size 为 6）
+  function page(something)
+    return rank(something) <= 6
+  end
+  function pinned(index)
+    return cand[index] ~= nil and cand[index].comment:find("📌") ~= nil
+  end
+
+deploy:
+  # 整句模式：关闭顶功，检查完整双拼输入与组词。
+  sentence:
+    patch:
+      switches/@4/reset: 0
+    tests:
+    # 完整双拼输入“冰雪拼音”，应保留在输入法中，不提前上屏。
+    - send: byxlhsys
+      assert: has("冰雪拼音") and commit == nil
+  # 固顶词与顶功：覆盖单字、sx、sxx、组词及自动顶屏。
+  popping:
+    patch: &id001
+      switches/@4/reset: 1
+      switches/@9/reset: 1
+    tests:
+    # 固顶单字：每声母一个，共键时按字频竞争。
+    - send: b
+      assert: (cand[1] and cand[1].text) == "被" and pinned(1)
+    - send: c
+      assert: (cand[1] and cand[1].text) == "吃" and pinned(1)
+    - send: d
+      assert: (cand[1] and cand[1].text) == "的" and pinned(1)
+    # sx二字词：首字声母＋第二字首个形码。
+    - send: ba
+      assert: (cand[1] and cand[1].text) == "比如" and pinned(1)
+    - send: ca
+      assert: (cand[1] and cand[1].text) == "除了" and pinned(1)
+    - send: da
+      assert: (cand[1] and cand[1].text) == "到了" and pinned(1)
+    - send: fa
+      assert: (cand[1] and cand[1].text) == "才能" and pinned(1)
+    # sxx二字词：首字声母＋第二字前两个形码。
+    - send: baa
+      assert: (cand[1] and cand[1].text) == "步骤" and pinned(1)
+    - send: caa
+      assert: (cand[1] and cand[1].text) == "成绩" and pinned(1)
+    - send: daa
+      assert: (cand[1] and cand[1].text) == "单纯" and pinned(1)
+    # 两字词组词：使用本方案完整双拼查询“冰雪”。
+    - send: byxl
+      assert: has("冰雪")
+    # 三字词组词：使用三个声母查询“输入法”。
+    - send: snf
+      assert: has("输入法")
+    # 四字词组词：使用各字声母查询“科学发展”。
+    - send: jxfz
+      assert: has("科学发展")
+    # 超过四个声母后，大写字母作为后续声母追加。
+    - send: jxfzG
+      assert: has("科学发展观")
+    # 三字词补形后继续输入双拼，检查“输入法”顶屏并开始输入“冰雪”。
+    - send: snfvbyxl
+      assert: commit == "输入法" and has("冰雪")
+  # 混合声韵拼写：前三字可补大写韵母，形码不计入声母数量。
+  mixed_spelling:
+    tests:
+    # 只补第一个字的韵母。
+    - send: sDnf
+      assert: has("输入法") and commit == nil
+    # 只补第二个字的韵母。
+    - send: snDf
+      assert: has("输入法") and commit == nil
+    # 只补第三个字的韵母。
+    - send: snfH
+      assert: has("输入法") and commit == nil
+    # 同时补前三个字的韵母。
+    - send: sDnDfH
+      assert: has("输入法") and commit == nil
+    # 补韵后追加首个形码，仍能查到“输入法”。
+    - send: sDnDfHv
+      assert: has("输入法") and commit == nil
+    # 补韵后追加完整词形前缀vua。
+    - send: sDnDfHvua
+      assert: has("输入法") and commit == nil
+    # 错误首形码应排除“输入法”。
+    - send: sDnDfHa
+      assert: not has("输入法")
+    # Escape取消后重新输入，混合拼写状态应清除。
+    - send: sDnDfH{Escape}snf
+      assert: has("输入法") and commit == nil
+    # 先补形，再补末字大写韵母，应仍能查到原词。
+    - send: snfvH
+      assert: has("输入法") and commit == nil
+  # 缓冲输入与提交：检查分段确认后的提交及继续输入；学习效果需运行验证。
+  encoding:
+    tests:
+    # Control+j开启缓冲，确认“冰雪”后再次输入，检查提交及后续候选。
+    - send: '{Control+j}byxl  byxl'
+      assert: commit == "冰雪" and has("冰雪")
+    # Control+j开启缓冲，确认“输入法”后再次输入，检查提交及后续候选。
+    - send: '{Control+j}snf  snf'
+      assert: commit == "输入法" and has("输入法")
+  # 缓冲开关命令：o显示切换候选，选中后切换状态且不提交命令文字。
+  buffered_command:
+    tests:
+    # 输入o时显示“开启缓冲”，命令本身不上屏。
+    - send: o
+      assert: (cand[1] and cand[1].text) == "📝 开启缓冲" and commit == nil
+    # 空格选择命令后清空编码，不提交文字。
+    - send: 'o '
+      assert: commit == nil and preedit == nil
+    # 再次输入o时显示“关闭缓冲”。
+    - send: o o
+      assert: (cand[1] and cand[1].text) == "📝 关闭缓冲" and commit == nil
+    # 空格关闭缓冲后，输入区与提交文字均为空。
+    - send: 'o o '
+      assert: commit == nil and preedit == nil
+  # 高级功能：拼音、部件、笔画反查，以及数字、Unicode、计算和日期。
+  advanced:
+    tests:
+    # 拼音反查：a引导，按shi查询“是”。
+    - send: ashi
+      assert: has("是")
+    # 部件全拼反查：u引导，输入王、炎的读音查询“琰”。
+    - send: uwangyan
+      assert: has("琰")
+    # 笔画反查：u引导，横竖撇点折对应viuoa。
+    - send: uviuoa
+      assert: has("札")
+    # Lua数字转中文：同时检查小写与大写数字候选。
+    - send: o123
+      assert: (cand[1] and cand[1].text) == "一百二十三" and has("壹佰贰拾叁")
+    # Unicode码点：4e00对应“一”。
+    - send: o4e00
+      assert: (cand[1] and cand[1].text) == "一"
+    # Lua计算器：1234×5678应得到7006652。
+    - send: o1234*5678
+      assert: has("7006652")
+    # 日期命令：只验证年月日格式，不固定日期。
+    - send: orq
+      assert: (cand[1] and cand[1].text and cand[1].text:match("^%d+年%d+月%d+日$") ~= nil)
+  # 方案码用户词典：按顺序执行，会写入本方案.userdb；请使用隔离测试目录。
+  schema_userdb:
+    tests:
+    # 自由加词：Control+'开始，输入单字并确认，再按Control+'保存到现有固顶词之后。
+    - send: ba{Control+apostrophe}b {Control+apostrophe}ba
+      assert: (cand[1] and cand[1].text) == "比如" and (cand[2] and cand[2].text) == "被" and pinned(2)
+    # 前移：Control+[把新增固定候选移到第一位。
+    - send: ba{Down}{Control+bracketleft}ba
+      assert: (cand[1] and cand[1].text) == "被" and pinned(1)
+    # 后移：Control+]把新增固定候选移回第二位。
+    - send: ba{Control+bracketright}ba
+      assert: (cand[1] and cand[1].text) == "比如" and (cand[2] and cand[2].text) == "被"
+    # 重置：Control+反斜杠清除自定义位置，恢复词表原有固顶词。
+    - send: ba{Control+backslash}ba
+      assert: (cand[1] and cand[1].text) == "比如" and pinned(1)
+  # 声声词：单字避开fix；二字优先复用fix；三字用纯声母，支持单引号和Tab。
+  ss_words:
+    patch: *id001
+    tests:
+    # 单字声声词：按单引号提交，文字与fix单字不同。
+    - send: b'
+      assert: commit == "吧"
+    # 另一声母的单字声声词。
+    - send: c'
+      assert: commit == "出"
+    # 二字声声词：纯声母编码，按单引号提交。
+    - send: bb'
+      assert: commit == "并不"
+    # 另一组二字声声词。
+    - send: cb'
+      assert: commit == "成本"
+    # 三字声声词：三个声母，按单引号提交。
+    - send: bbb'
+      assert: commit == "并不比"
+    # Tab与单引号等效，提交对应二字声声词。
+    - send: bb{Tab}
+      assert: commit == "并不"
+  # 拆分形码：使用snow_jiandao_chaifen字典和radical_jiandao部件映射。
+  shape_chaifen:
+    tests:
+    # “令”的拆分为人丶・乙丶，形码为ioao；前缀音码使用本方案拼写。
+    - send: lyioao
+      assert: has("令")
+    # 错误形码iov不应查到“令”。
+    - send: lyiov
+      assert: not has("令")

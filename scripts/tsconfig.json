@@ -1,0 +1,18 @@
+{
+	"compilerOptions": {
+		"strict": true,
+		"forceConsistentCasingInFileNames": true,
+		"module": "ESNext",
+		"moduleResolution": "bundler",
+		"target": "ESNext",
+		"resolveJsonModule": true,
+		"allowSyntheticDefaultImports": true,
+		"strictNullChecks": true,
+		"strictFunctionTypes": true,
+		"skipLibCheck": true,
+		"sourceMap": true,
+		"types": ["bun-types"]
+	},
+	"include": ["./**/*"],
+	"exclude": ["node_modules", "**/node_modules/*"]
+}

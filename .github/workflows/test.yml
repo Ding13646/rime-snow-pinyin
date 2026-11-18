@@ -1,0 +1,11 @@
+on: [push, pull_request]
+
+name: 测试
+
+jobs:
+  functional:
+    name: 功能门禁
+    uses: ./.github/workflows/functional.yml
+  latency:
+    name: 性能门禁
+    uses: ./.github/workflows/latency.yml

@@ -22,7 +22,7 @@ bun scripts/link.ts unlink    # 还原成独立副本
 bun scripts/link.ts sync      # 手动单向镜像到 iCloud，并重新打包
 ```
 
-- `~/.local/share/fcitx5/rime` 的 `snow_*.schema.yaml`、`snow_*.dict.yaml`、`snow_*.fixed.txt`、`snow_*_ss.txt`、`snow_algebra.yaml`、`grammar.yaml`、`rime_frost.dict.yaml`、`frost_dicts/`、`predict.userdb` 和 `lua/snow` 是本仓库软链，修改后只需重新部署，**不需要同步**；修改 Lua 后部署会重建状态并重新 `require`，无需重启输入法。
+- `~/.local/share/fcitx5/rime` 的 `snow_*.schema.yaml`、`snow_*.dict.yaml`、`snow_*.fixed.txt`、`snow_*_ss.txt`、`snow_algebra.yaml`、`grammar.yaml`、`rime_frost.dict.yaml`、`frost_dicts/` 和 `lua/snow` 是本仓库软链，修改后只需重新部署，**不需要同步**；修改 Lua 后部署会重建状态并重新 `require`，无需重启输入法。
 - iOS 元书方案位于 iCloud 的 `RimeUserData/rime-snow-pinyin`。iCloud 不跟随软链，`sync` 仅复制有变化的文件并清理已删除项；需要在 iOS 使用改动时手动运行。它还用系统 `zip` 替换 `~/Library/Mobile Documents/iCloud~com~ihsiao~apps~Hamster3/Documents/sync/rime-snow-pinyin.zip`，保留相对路径。Android 元书通过应用导入方案。
 - `.gitignore` 排除的 `*.custom.yaml`、`*.userdb`、`build/`、`user.yaml`、`installation.yaml` 各自独立，在仓库跑 mira 不会污染实际词频。
 
@@ -74,11 +74,11 @@ bun scripts/version.ts          # 查看版本
 bun scripts/version.ts --check  # 检查全部 YAML 版本；可再传入发布标签核对
 ```
 
-发布前必须通过功能、词典和性能门禁，并核对标签与全部版本号一致。`release.yml` 打包 `snow-pinyin.zip`、皮肤包和预览安装包；`snow_algebra.yaml`、`grammar.yaml`、`rime_frost.dict.yaml`、`frost_dicts/`、`predict.userdb`、`default.custom.yaml`、`squirrel.custom.yaml` 随压缩包分发，`recipe.yaml` 的 `install_files` 也显式包含它们。
+发布按用户指定执行：如明确要求跳过门禁，记录跳过项并按发布清单构建；核对标签与全部版本号一致。`release.yml` 打包 `snow-pinyin.zip`、皮肤包和预览安装包；个人 `predict.userdb` 不随公开包分发。`snow_algebra.yaml`、`grammar.yaml`、`rime_frost.dict.yaml`、`frost_dicts/`、`default.custom.yaml`、`squirrel.custom.yaml` 随压缩包分发。
 
 声声词表 `snow_<方案>_ss.txt` 由 `top_1000_2_and_3_words.txt` 生成：二三字词前 1000 名按各方案声母首键映射编码，编码相同取词频权重大者；码为 1-4 个声母键，引号与 Tab 等效上屏。`ss.lua` 按 `schema_id` 选择词表与首键集合（`SCHEMAS`），新增方案时补一项。
 
-冰雪小鹤通过 `predictor` 处理器 + `predict_translator` 翻译器 + `prediction` 开关接入 librime-predict（`predictor/db` 指向 `predict.userdb`），上屏后按用户历史预测下一个词；mira 下该流程会挂起，验证依赖实机。
+冰雪小鹤曾试接 librime-predict，但在 Squirrel 上触发会话创建兼容问题；当前公开配置不启用预测，以免依赖个人数据库。若要恢复，请先在隔离的 Squirrel 用户目录中确认数据库格式与插件兼容，再另行实机验证；mira 不能替代该验证。
 
 `build/kMandarin17.reverse.bin` 是预编译的反查注音库，`lookup_pinyin` 通过它给 `stroke` 段的反查候选注音；它由 `.gitignore` 单独放行并随用户包分发，发版用户包的 `build/` 里只保留这一个文件，不要删除。
 

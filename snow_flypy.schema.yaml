@@ -6,7 +6,7 @@ __include: snow_pinyin.schema.yaml:/
 schema:
   schema_id: snow_flypy
   name: 冰雪小鹤
-  version: "0.4.1"
+  version: "0.3.14"
   author:
     - 吅吅大山
     - 谭淞宸 <i@tansongchen.com>
@@ -29,7 +29,6 @@ engine:
     - lua_processor@*snow.select_character
     - recognizer
     - lua_processor@*snow.user_dict
-    - predictor
     - key_binder
     - speller
     - punctuator
@@ -47,7 +46,6 @@ engine:
     - fallback_segmentor
   translators:
     - punct_translator
-    - predict_translator
     - script_translator
     - script_translator@jianpin
     - table_translator@stroke
@@ -99,18 +97,11 @@ __patch:
   - snow_flypy.custom:/patch?
 
 patch:
-  predictor:
-    db: predict.userdb
-    max_candidates: 5
-    max_iterations: 1
   switches:
     __include: snow_pinyin.schema.yaml:/switches
     __append:
       - name: ss
         states: [关闭, 开启]
-        reset: 1
-      - name: prediction
-        states: [关闭预测, 开启预测]
         reset: 1
   key_binder:
     bindings:

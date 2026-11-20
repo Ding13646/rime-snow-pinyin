@@ -1,0 +1,50 @@
+# 声声词显示回归：移除普通翻译器，稳定复现候选列表为空的情况。
+schema: snow_jiandao
+source_dir: ..
+deploy:
+  ss_empty_candidates:
+    patch:
+      engine/translators: []
+    options:
+      popping: true
+      ss: true
+    tests:
+      - send: bbb
+        assert: cand[1] ~= nil and cand[1].text == "并不比" and cand[1].comment:find("并不比'", 1, true) ~= nil and preedit == "bbb" and commit == nil
+      - send: "bbb'"
+        assert: commit == "并不比"
+      - send: bbb{Tab}
+        assert: commit == "并不比"
+      - send: "bbb "
+        assert: commit == "并不比"
+      - send: zzzz
+        assert: cand[1] == nil and commit == nil
+  ss_disabled:
+    patch:
+      engine/translators: []
+    options:
+      popping: true
+      ss: false
+    tests:
+      - send: bbb
+        assert: cand[1] == nil and commit == nil
+  ss_sentence_mode:
+    patch:
+      engine/translators: []
+    options:
+      popping: false
+      ss: true
+    tests:
+      - send: bbb
+        assert: cand[1] == nil and commit == nil
+  ss_normal_candidates:
+    options:
+      popping: true
+      ss: true
+    tests:
+      - send: b
+        assert: cand[1] ~= nil and cand[1].text == "被" and cand[1].comment:find("吧'", 1, true) ~= nil
+      - send: "bbb'"
+        assert: commit == "并不比"
+      - send: bbb{Tab}
+        assert: commit == "并不比"

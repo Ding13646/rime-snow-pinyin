@@ -3,7 +3,7 @@
 --   码为 1-4 个声母键，引号与 Tab 等效，均可上屏；
 --   声母键与各方案单字/二简打法一致（韵母感知飞键，详见词表头注释）
 -- 处理器: 两码状态按引号或 Tab，词表命中即直接上屏该词，未命中回落原有按键行为
--- 过滤器: 命中词表时在首选候选上追加 "词语'" 注释，提示按引号或 Tab 将上屏的词
+-- 过滤器: 命中词表时在首选候选上追加 "词语'" 注释；没有候选时单独显示声声词
 
 local snow = require "snow.snow"
 
@@ -204,6 +204,16 @@ function ss.filter.func(translation, env)
 			first = false
 		end
 		yield(candidate)
+	end
+	if word and first then
+		-- 没有普通候选时也要输出候选，才能显示声声词提示。
+		local context = env.engine.context
+		local segment = context.composition:toSegmentation():back()
+		if segment then
+			local candidate = Candidate("ss", segment.start, segment._end, word, word .. "'")
+			candidate.preedit = snow.current(context) or ""
+			yield(candidate)
+		end
 	end
 end
 

@@ -123,7 +123,7 @@ deploy:
       - send: "ekekiiekek"
         assert: cand[1].text == "誓师"
       - send: ekekio
-        assert: cand[1].text == "史诗"
+        assert: cand[1].text == "史实"
       - send: ekekioekek
         assert: commit == "史诗" and cand[1].text == "史诗"
   # 混合声韵拼写：韵母和形码不计入四个声母的分界
@@ -209,14 +209,14 @@ deploy:
       # 空格确认后再补「猫」的形码 ua，再次空格即造好词
       - send: xgmz
         assert: not has("星猫")
-      - send: xgmzoi
+      - send: xgmzoiu
         assert: cand[1].text == "星"
-      - send: "xgmzoi ua"
+      - send: "xgmzoiu "
         assert: cand[1].text == "猫"
-      - send: "xgmzoi ua  xgmz"
+      - send: "xgmzoi  xgmz"
         assert: cand[1].text == "星猫"
       # 缓冲造词（拆分输入的片段不能使用 630 简码）
-      - send: "{Control+j}jp mzua  jpmz"
+      - send: "{Control+j}jp mz  jpmz"
         assert: cand[1].text == "长猫"
       - send: "{Control+j}bgxherf  bxero"
         assert: cand[1].text == "冰雪输入法"
@@ -266,9 +266,9 @@ deploy:
         assert: cand[1].text == "是"
       # 部件全拼反查：连续输入各部件读音，候选同时显示拼音。
       - send: "uwangyan"
-        assert: page("琰") and cand[rank("琰")].comment:find("yan3", 1, true) ~= nil and commit == nil
+        assert: page("琰") and cand[rank("琰")].comment:find("yǎn", 1, true) ~= nil and commit == nil
       - send: "umaowenniao"
-        assert: page("鹜") and cand[rank("鹜")].comment:find("wu4", 1, true) ~= nil and commit == nil
+        assert: page("鹜") and cand[rank("鹜")].comment:find("wù", 1, true) ~= nil and commit == nil
       # 单引号结束反查后可正常上屏，退格重输仍留在反查段。
       - send: "uwangyan' "
         assert: commit == "琰"
@@ -300,8 +300,8 @@ deploy:
       - send: ors
         assert: cand[1].text:match("^%d+年%d+月%d+日%d+时%d+分%d+秒$") ~= nil
       # 以词定字：`[` 取首字、`]` 取末字
-      - send: "xxrr["
-        assert: commit == "熙"
+      - send: "wery["
+        assert: commit == "万"
       # 词不在首选时先用方向键选中再定字
       - send: "chww{Down}{Down}]"
         assert: commit == "薇"

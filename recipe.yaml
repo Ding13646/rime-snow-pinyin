@@ -21,7 +21,6 @@ install_files:
   - default.custom.yaml
   - squirrel.custom.yaml
   - rime_frost.dict.yaml
-  - predict.userdb
   - frost_dicts/**/*.dict.yaml
   - lua/snow/*
   - radical_pinyin.schema.yaml
